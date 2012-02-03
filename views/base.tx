@@ -78,9 +78,10 @@ String.prototype.unescapeHTMLx = function () {
     return result;
 }
 $(function(){
-$('div.metrics-graph').each(load_graphs);
+$('div.metrics-graph').each(loadGraphs);
+$('form.hxrpost').each(setHxrpost);
 });
-function load_graphs () {
+function loadGraphs () {
   var gdiv = $(this);
   g = new Dygraph(
     gdiv.context,
@@ -93,6 +94,38 @@ function load_graphs () {
       drawPoints: true,
     }
   );
+};
+function setHxrpost() {
+  var myform = this;
+  $(myform).first().prepend('<div class="alert alert-error hide">System Error!</div>');
+  $(myform).submit(function(){
+    $(myform).find('.alert-error').hide();
+    $(myform).find('.validator_message').detach();
+    $(myform).find('.control-group').removeClass('error');
+    $.ajax({
+      type: 'POST',
+      url: myform.action,
+      data: $(myform).serialize(),
+      success: function(data) {
+        $(myform).find('.alert-error').hide();
+        if ( data.error == 0 ) {
+            location.href = data.location;
+        }
+        else {
+            $.each(data.messages, function (param,message) {
+              var helpblock = $('<p class="validator_message help-block"></p>');
+              helpblock.text(message);
+              $(myform).find('[name="'+param+'"]').parents('div.controls').first().append(helpblock);
+              $(myform).find('[name="'+param+'"]').parents('div.control-group').first().addClass('error');
+            });
+        }
+      },
+      error: function() {
+        $(myform).find('.alert-error').show();
+      }
+    });
+    return false;
+  });
 };
 </script>
 </body>

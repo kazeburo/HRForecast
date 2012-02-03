@@ -6,7 +6,7 @@ use warnings;
 use utf8;
 use Time::Piece;
 use Time::Piece::MySQL;
-use JSON;
+use JSON qw//;
 use Log::Minimal;
 use DBIx::Sunny;
 use Scope::Container::DBI;
@@ -37,7 +37,7 @@ sub inflate_row {
     my ($self, $row) = @_;
     $row->{created_at} = Time::Piece->from_mysql_datetime($row->{created_at});
     $row->{updated_at} = Time::Piece->from_mysql_timestamp($row->{updated_at});
-    my $ref =  decode_json($row->{meta}||'{}');
+    my $ref =  JSON::decode_json($row->{meta}||'{}');
     my %result = (
         %$ref,
         %$row
@@ -60,7 +60,7 @@ sub inflate_complex_row {
     my ($self, $row) = @_;
     $row->{created_at} = Time::Piece->from_mysql_datetime($row->{created_at});
     $row->{updated_at} = Time::Piece->from_mysql_timestamp($row->{updated_at});
-    my $ref =  decode_json($row->{meta}||'{}');
+    my $ref =  JSON::decode_json($row->{meta}||'{}');
     my %result = (
         %$ref,
         %$row
@@ -113,6 +113,18 @@ sub update {
     );
 
     1;
+}
+
+sub update_metrics {
+    my ($self, $id, $args) = @_;
+    my @update = map { delete $args->{$_} } qw/service_name section_name graph_name sort/;
+    my $meta = encode_json($args);
+    my $dbh = $self->dbh;
+    $dbh->query(
+        'UPDATE metrics SET service_name=?, section_name=?, graph_name=?, sort=?, meta=? WHERE id = ?',
+        @update, $meta,  $id
+    );
+    return 1;
 }
 
 sub get_data {

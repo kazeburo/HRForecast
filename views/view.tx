@@ -1,8 +1,30 @@
 <div class="metrics">
+
+<div class="row-fluid">
+<div class="span6">
 <h2><a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>"><: $metrics.graph_name :></a><small><: $metrics.description :></small></h2>
-<p>
-<a class="label label-success" href="<: $c.req.uri_for('/edit/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name) :>">設定</a>
-<span class="label">created_at</span> <: $metrics.created_at.strftime('%Y-%m-%d %T') :>
-</p>
+</div>
+<div class="span6">
+<div class="btn-toolbar pull-right">
+
+
+<div class="btn-group">
+<a class="btn btn-disabled">CSV</a>
+<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+<ul class="dropdown-menu">
+<li><a href="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[t=>'w',d=>1]) :>">1週間</a></li>
+<li><a href="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[t=>'m',d=>1]) :>">1ヶ月</a></li>
+<li><a href="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[t=>'y',d=>1]) :>">1年</a></li>
+</ul>
+</div><!-- /btn-group -->
+
+<div class="btn-group">
+<a class="btn btn-small" href="<: $c.req.uri_for('/edit/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name) :>">設定</a>
+</div>
+
+</div>
+</div>
+</div>
+
 <div id="graphdiv-$index" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[ t => $valid.valid('t') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" style="height:250px;"></div>
 </div>

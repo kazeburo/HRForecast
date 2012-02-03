@@ -97,28 +97,36 @@ get '/docs' => sub {
     $c->render('docs.tx',{});
 };
 
+my $metrics_validator = [
+    't' => {
+        default => 'm',
+        rule => [
+            [['CHOICE',qw/w m y c/],'invalid browse term'],
+        ],
+    },
+    'from' => {
+        default => localtime(time-86400*35)->strftime('%Y/%m/%d %T'),
+        rule => [
+            [sub{ HTTP::Date::str2time($_[1]) }, 'invalid From datetime'],
+        ],
+    },
+    'to' => {
+        default => localtime()->strftime('%Y/%m/%d %T'),
+        rule => [
+            [sub{ HTTP::Date::str2time($_[1]) }, 'invalid To datetime'],
+        ],
+    },
+    'd' => {
+        default => 0,
+        rule => [
+            [['CHOICE',qw/1 0/],'invalid download flag'],
+        ],
+    },
+];
+
 get '/list/:service_name/:section_name' => [qw/sidebar/] => sub {
     my ( $self, $c )  = @_;
-    my $result = $c->req->validator([
-        't' => {
-            default => 'm',
-            rule => [
-                [['CHOICE',qw/w m y c/],'invalid browse term'],
-            ],
-        },
-        'from' => {
-            default => localtime(time-86400*35)->strftime('%Y/%m/%d %T'),
-            rule => [
-                [sub{ HTTP::Date::str2time($_[1]) }, 'invalid From datetime'],
-            ],
-        },
-        'to' => {
-            default => localtime()->strftime('%Y/%m/%d %T'),
-            rule => [
-                [sub{ HTTP::Date::str2time($_[1]) }, 'invalid To datetime'],
-            ],
-        },
-    ]);
+    my $result = $c->req->validator($metrics_validator);
     my $rows = $self->data->get_metricses(
         $c->args->{service_name}, $c->args->{section_name}
     );
@@ -130,28 +138,83 @@ get '/list/:service_name/:section_name' => [qw/sidebar/] => sub {
     });
 };
 
-get '/csv/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
+get '/edit/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/] => sub {
     my ( $self, $c )  = @_;
+    $c->render('edit.tx');
+};
+
+post '/edit/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/] => sub {
+    my ( $self, $c )  = @_;
+    my $check_uniq = sub {
+        my ($req,$val) = @_;
+        my $service = $req->param('service_name');
+        my $section = $req->param('section_name');
+        my $graph = $req->param('graph_name');
+        $service = '' if !defined $service;
+        $section = '' if !defined $section;
+        $graph = '' if !defined $graph;
+        my $row = $self->data->get($service,$section,$graph);
+        return 1 if $row && $row->{id} == $c->stash->{metrics}->{id};
+        return 1 if !$row;
+        return;
+    };
     my $result = $c->req->validator([
-        't' => {
-            default => 'm',
+        'service_name' => {
             rule => [
-                [['CHOICE',qw/w m y c/],'invalid browse term'],
+                ['NOT_NULL', 'サービス名がありません'],
             ],
         },
-        'from' => {
-            default => localtime(time-86400*35)->strftime('%Y/%m/%d %T'),
+        'section_name' => {
             rule => [
-                [sub{ HTTP::Date::str2time($_[1]) }, 'invalid From datetime'],
+                ['NOT_NULL', 'セクション名がありません'],
             ],
         },
-        'to' => {
-            default => localtime()->strftime('%Y/%m/%d %T'),
+        'graph_name' => {
             rule => [
-                [sub{ HTTP::Date::str2time($_[1]) }, 'invalid To datetime'],
+                ['NOT_NULL', 'グラフ名がありません'],
+                [$check_uniq,'同じ名前のグラフがあります'],
+            ],
+        },
+        'description' => {
+            default => '',
+            rule => [],
+        },
+        'sort' => {
+            rule => [
+                ['NOT_NULL', '値がありません'],
+                [['CHOICE',0..19], '値が正しくありません'],
+            ],
+        },
+        'color' => {
+            rule => [
+                ['NOT_NULL', '正しくありません'],
+                [sub{ $_[1] =~ m!^#[0-9A-F]{6}$!i }, '#000000の形式で入力してください'],
             ],
         },
     ]);
+    if ( $result->has_error ) {
+        my $res = $c->render_json({
+            error => 1,
+            messages => $result->errors
+        });
+        return $res;
+    }
+
+    $self->data->update_metrics(
+        $c->stash->{metrics}->{id},
+        $result->valid->as_hashref
+    );
+
+    $c->render_json({
+        error => 0,
+        location => $c->req->uri_for(
+            '/list/'.$result->valid('service_name').'/'.$result->valid('section_name'))->as_string,
+    });
+};
+
+get '/csv/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
+    my ( $self, $c )  = @_;
+    my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map{ $result->valid($_) } qw/t from to/);
     my ($rows,$opt) = $self->data->get_data(
         $c->stash->{metrics}->{id},
@@ -161,7 +224,14 @@ get '/csv/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
     foreach my $row ( @$rows ) {
         $csv .= sprintf "%s,%d\n", $row->{datetime}->strftime('%Y/%m/%d %T'), $row->{number}
     }
-    $c->res->content_type('text/plain');
+    if ( $result->valid('d') ) {
+        $c->res->header('Content-Disposition',
+                        sprintf('attachment; filename="metrics_%s.csv"',$c->stash->{metrics}->{id}));
+        $c->res->content_type('application/octet-stream');
+    }
+    else {
+        $c->res->content_type('text/plain');
+    }
     $c->res->body($csv);
     $c->res;
 };

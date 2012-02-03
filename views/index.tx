@@ -2,6 +2,9 @@
 
 : around content -> {
 <h2>Say Hello to HRForecast</h2>
+
+<p>HRForecastはメトリクスを登録し、グラフとして表示またはCSVとしてダウンロードできるツールです</p>
+<p>使い方はドキュメントページを参照してください</p>
 : }
 
 
