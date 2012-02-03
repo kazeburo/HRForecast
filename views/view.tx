@@ -1,0 +1,8 @@
+<div class="metrics">
+<h2><a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>"><: $metrics.graph_name :></a><small><: $metrics.description :></small></h2>
+<p>
+<a class="label label-success" href="<: $c.req.uri_for('/edit/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name) :>">設定</a>
+<span class="label">created_at</span> <: $metrics.created_at.strftime('%Y-%m-%d %T') :>
+</p>
+<div id="graphdiv-$index" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[ t => $valid.valid('t') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" style="height:250px;"></div>
+</div>

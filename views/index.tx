@@ -1,0 +1,7 @@
+: cascade base
+
+: around content -> {
+<h2>Say Hello to HRForecast</h2>
+: }
+
+

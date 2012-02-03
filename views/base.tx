@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+<link rel="shortcut icon" href="<: $c.req.uri_for('/favicon.ico') :>" type="image/vnd.microsoft.icon" />
+<link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap.min.css') :>">
+<title>HRForecast</title>
+<style type="text/css">
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+.sidebar-nav {
+  padding: 9px 0;
+}
+</style>
+<link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap-responsive.min.css') :>">
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container-fluid">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</a>
+<a class="brand" href="<: $c.req.uri_for('/') :>">HRForecast</a>
+<div class="nav-collapse">
+<ul class="nav">
+<li><a href="<: $c.req.uri_for('/') :>">ホーム</a></li>
+<li><a href="<: $c.req.uri_for('/add_complex') :>">複合グラフ追加</a></li>
+<li><a href="<: $c.req.uri_for('/docs') :>">ドキュメント</a></li>
+</ul>
+</div><!--/.nav-collapse -->
+</div>
+</div>
+</div>
+
+<div class="container-fluid">
+<div class="row-fluid">
+<div class="span3">
+<div class="well sidebar-nav">
+<ul class="nav nav-list">
+: for $c.stash.services ->  $service {
+<li class="nav-header"><: $service.name :></li>
+  : for $service.sections -> $section {
+<li class="<: $section.active ? "active" : "" :>"><a href="<: $c.req.uri_for('/list/'~$service.name~'/'~$section.name) :>"><i class="icon-signal"></i><: $section.name :></a></li>
+  : }
+: }
+</ul>
+</div><!--/.well -->
+</div><!--/span-->
+
+<div class="span9">
+: block content -> { }
+</div><!--/span-->
+</div><!--/row-->
+
+<hr>
+
+<footer>
+<p>Powered by Kossy</p>
+</footer>
+
+</div><!--/.fluid-container-->
+
+<script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.7.1.min.js') :>"></script>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/dygraph-combined.js') :>"></script>
+<script type="text/javascript">
+String.prototype.unescapeHTMLx = function () {
+    var temp = document.createElement("div");
+    temp.innerHTML = this;
+    var result = temp.childNodes[0].nodeValue;
+    temp.removeChild(temp.firstChild);
+    return result;
+}
+$(function(){
+$('div.metrics-graph').each(load_graphs);
+});
+function load_graphs () {
+  var gdiv = $(this);
+  g = new Dygraph(
+    gdiv.context,
+    gdiv.data('csv'),
+    {
+      includeZero: true,
+      dateWindow: [ Date.parse(gdiv.data('datewindow')[0]),Date.parse(gdiv.data('datewindow')[1]) ],
+      colors: gdiv.data('colors'),
+      stackedGraph: true,
+      drawPoints: true,
+    }
+  );
+};
+</script>
+</body>
+</html>
+

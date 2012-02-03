@@ -1,0 +1,25 @@
+: cascade base
+
+: around content -> {
+<h1>
+<span><a href="<: $c.req.uri_for('/') :>">Home</a> »
+<a href="<: $c.req.uri_for('/list/'~$c.args.service_name) :>"><: $c.args.service_name :></a> »
+<: $c.args.section_name :></span>
+</h1>
+
+<div class="pagination pagination-right">
+<ul>
+<li class="<: ($valid.valid('t') == 'w') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/list/'~$c.args.service_name~'/'~$c.args.section_name, [t=>'w']) :>">1週間</a></li>
+<li class="<: ($valid.valid('t') == 'm') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/list/'~$c.args.service_name~'/'~$c.args.section_name, [t=>'m']) :>">1ヶ月</a></li>
+<li class="<: ($valid.valid('t') == 'y') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/list/'~$c.args.service_name~'/'~$c.args.section_name, [t=>'y']) :>">1年</a></li>
+</ul>
+</div>
+
+: for $metricses ->  $metrics {
+: my $index = $~metrics.index;
+: include "view.tx" { metrics => $metrics, index => $index };
+: } # for metricses
+
+: }
+
+
