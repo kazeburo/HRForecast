@@ -127,6 +127,20 @@ sub update_metrics {
     return 1;
 }
 
+sub delete_metrics {
+    my ($self, $id) = @_;
+    my $dbh = $self->dbh;
+    $dbh->begin_work;
+    my $rows = 1;
+    while ( $rows > 1 ) {
+        $rows = $dbh->query('DELETE FROM data WHERE metrics_id = ? LIMIT 1000',$id);
+    }
+    $dbh->query('DELETE FROM metrics WHERE id =?',$id);
+    $dbh->commit;
+    1;
+}
+
+
 sub get_data {
     my ($self, $id, $from, $to) = @_;
 

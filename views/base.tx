@@ -9,9 +9,13 @@
 body {
   padding-top: 60px;
   padding-bottom: 40px;
+  background-color: #fff;
 }
 .sidebar-nav {
   padding: 9px 0;
+}
+.modal > form {
+  margin: 0;
 }
 </style>
 <link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap-responsive.min.css') :>">
@@ -37,6 +41,7 @@ body {
 </div>
 </div>
 </div>
+
 
 <div class="container-fluid">
 <div class="row-fluid">
@@ -70,16 +75,10 @@ body {
 <script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/dygraph-combined.js') :>"></script>
 <script type="text/javascript">
-String.prototype.unescapeHTMLx = function () {
-    var temp = document.createElement("div");
-    temp.innerHTML = this;
-    var result = temp.childNodes[0].nodeValue;
-    temp.removeChild(temp.firstChild);
-    return result;
-}
 $(function(){
-$('div.metrics-graph').each(loadGraphs);
-$('form.hxrpost').each(setHxrpost);
+  $('div.metrics-graph').each(loadGraphs);
+  $('form.hxrpost').each(setHxrpost);
+  $('button.hxr_confirm_button').each(setHxrConfirmBtn);
 });
 var suffixes = ['', 'k', 'M', 'G', 'T'];
 function round(num, places) {
@@ -140,6 +139,41 @@ function setHxrpost() {
       }
     });
     return false;
+  });
+};
+
+function setHxrConfirmBtn() {
+  var mybtn = this;
+  var modal = $('<div class="modal fade">'+
+'<form method="post" action="#">'+
+'<div class="modal-header"><h3>confirm</h3></div>'+
+'<div class="modal-body"><div class="alert alert-error hide">System Error!</div><p>confirm</p></div>'+
+'<div class="modal-footer"><input type="submit" class="btn btn-danger" value="confirm" /></div>'+
+'</form></div>');
+  modal.find('h3').text($(mybtn).text());
+  modal.find('input[type=submit]').attr('value',$(mybtn).text());
+  modal.find('.modal-body > p').text( $(mybtn).data('confirm') );
+  modal.find('form').submit(function(){
+    $.ajax({
+      type: 'POST',
+      url: $(mybtn).data('uri'),
+      data: modal.find('form').serialize(),
+      success: function(data) {
+        modal.find('.alert-error').hide();
+        if ( data.error == 0 ) {
+          location.href = data.location;
+        }
+      },
+      error: function() {
+        modal.find('.alert-error').show();
+      }
+    });
+    return false;
+  });
+  $(mybtn).click(function(){
+    modal.modal({
+      show: true,
+    });
   });
 };
 </script>

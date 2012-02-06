@@ -143,7 +143,7 @@ get '/edit/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/]
     $c->render('edit.tx');
 };
 
-post '/edit/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/] => sub {
+post '/edit/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
     my ( $self, $c )  = @_;
     my $check_uniq = sub {
         my ($req,$val) = @_;
@@ -211,6 +211,19 @@ post '/edit/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/
             '/list/'.$result->valid('service_name').'/'.$result->valid('section_name'))->as_string,
     });
 };
+
+post '/delete/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
+    my ( $self, $c )  = @_;
+    $self->data->delete_metrics(
+        $c->stash->{metrics}->{id},
+    );
+    $c->render_json({
+        error => 0,
+        location => $c->req->uri_for(
+            '/list/'.$c->args->{service_name}.'/'.$c->args->{section_name})->as_string,
+    });
+};
+
 
 get '/csv/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
     my ( $self, $c )  = @_;

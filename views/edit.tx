@@ -58,13 +58,14 @@
 <label class="control-label">グラフの色</label>
 <div class="controls">
 <input class="span4" type="text" name="color" />
-<p id="notice_color" class="validator-message help-block"></p>
 <p class="help-block">#000000-#FFFFFFの範囲</p>
 </div>
 </div>
 
 <div class="form-actions">
 <button type="submit" class="btn btn-primary">変更</button>
+<a href="<: $c.req.uri_for('/list/'~$c.stash.metrics.service_name~'/'~$c.stash.metrics.section_name) :>" class="btn">キャンセル</a>
+<button type="button" class="btn btn-danger hxr_confirm_button" data-confirm="「<: $c.stash.metrics.graph_name:>」を削除しますか？" data-uri="<: $c.req.uri_for('/delete/'~$c.stash.metrics.service_name~'/'~$c.stash.metrics.section_name~'/'~$c.stash.metrics.graph_name) :>">削除</button>
 </div>
 
 </fieldset>
