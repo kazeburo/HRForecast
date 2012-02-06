@@ -1,15 +1,15 @@
 <div class="metrics">
 
 <div class="row-fluid">
-<div class="span6">
+<div class="span8">
 <h2><a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>"><: $metrics.graph_name :></a><small><: $metrics.description :></small></h2>
 </div>
-<div class="span6">
+<div class="span4">
 <div class="btn-toolbar pull-right">
 
 
 <div class="btn-group">
-<a class="btn btn-disabled">CSV</a>
+<a class="btn" href="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[t=>$valid.valid('t'),d=>1]) :>">CSV</a>
 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
 <ul class="dropdown-menu">
 <li><a href="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[t=>'w',d=>1]) :>">1週間</a></li>
@@ -26,5 +26,5 @@
 </div>
 </div>
 
-<div id="graphdiv-$index" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[ t => $valid.valid('t') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" style="height:250px;"></div>
+<div id="graphdiv-$index" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[ t => $valid.valid('t') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" style="height:230px;"></div>
 </div>

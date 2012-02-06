@@ -8,7 +8,7 @@ use HTTP::Date;
 use Time::Piece;
 use HRForecast::Data;
 use Log::Minimal;
-use JSON;
+use JSON qw//;
 
 my $JSON = JSON->new()->ascii(1);
 sub encode_json {
@@ -92,7 +92,7 @@ get '/' => [qw/sidebar/] => sub {
     $c->render('index.tx', {});
 };
 
-get '/docs' => sub {
+get '/docs' => [qw/sidebar/] => sub {
     my ( $self, $c )  = @_;
     $c->render('docs.tx',{});
 };
