@@ -92,6 +92,7 @@ function loadGraphs () {
       colors: gdiv.data('colors'),
       stackedGraph: true,
       drawPoints: true,
+      labelsKMB: true,
     }
   );
 };
