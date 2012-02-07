@@ -107,6 +107,40 @@ $ curl -F number=10 -F datetime=20120206T09:41:31 <: $c.req.uri_for('/') :>api/n
 
 <h3>グラフの表示オプション</h3>
 
-<p>準備中。たぶんiframeで呼び出す形</p>
+<p>たぶんiframeで呼び出し可能です</p>
+
+<pre>
+&lt;iframe src="<: $c.req.uri_for('/') :>ifr/:service_name/:section_name/:graph_name" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"&gt;&lt;/iframe&gt;
+</pre>
+
+<p>srcのURIパラメータとして、以下が利用できます</p>
+
+<table class="table">
+<tr>
+<th>パラメータ</th>
+<th>説明</th>
+<th>必須/オプション</th>
+</tr>
+
+<tr>
+<td>t</td>
+<td>グラフの表示範囲<br />
+w => 1週間<br />
+m => 1ヶ月<br />
+y => 1年<br />
+c => 指定<br />
+</td>
+<td>オプション。デフォルトは「m」</td>
+</tr>
+
+<tr>
+<td>from/to</td>
+<td>グラフの表示範囲を「c」にした場合の日付<br />
+データ登録APIと同じ日付フォーマットが利用できる
+</td>
+<td>オプション</td>
+</tr>
+
+</table>
 
 : }
