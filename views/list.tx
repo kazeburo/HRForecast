@@ -3,7 +3,7 @@
 : around content -> {
 <h1>
 <span><a href="<: $c.req.uri_for('/') :>">Home</a> »
-<a href="<: $c.req.uri_for('/list/'~$c.args.service_name) :>"><: $c.args.service_name :></a> »
+<: $c.args.service_name :> »
 <: $c.args.section_name :></span>
 </h1>
 

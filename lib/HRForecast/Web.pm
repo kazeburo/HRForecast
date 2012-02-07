@@ -138,6 +138,30 @@ get '/list/:service_name/:section_name' => [qw/sidebar/] => sub {
     });
 };
 
+get '/view/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/] => sub {
+    my ( $self, $c )  = @_;
+    my $result = $c->req->validator($metrics_validator);
+    my ($from ,$to) = $self->calc_term( map {$result->valid($_)} qw/t from to/);
+    $c->render('list.tx', {
+        metricses => [$c->stash->{metrics}],
+        valid => $result, 
+        date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
+                                    $to->strftime('%Y/%m/%d %T')]),        
+    });
+};
+
+get '/ifr/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
+    my ( $self, $c )  = @_;
+    my $result = $c->req->validator($metrics_validator);
+    my ($from ,$to) = $self->calc_term( map {$result->valid($_)} qw/t from to/);
+    $c->render('ifr.tx', {
+        metrics => $c->stash->{metrics},
+        valid => $result, 
+        date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
+                                    $to->strftime('%Y/%m/%d %T')]),        
+    });
+};
+
 get '/edit/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/] => sub {
     my ( $self, $c )  = @_;
     $c->render('edit.tx');
