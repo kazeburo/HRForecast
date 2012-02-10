@@ -17,6 +17,7 @@ WriteMakefile(
         'Plack::Builder::Conditionals' => '0.03',
         'Scope::Container::DBI' => '0.03',
         'Plack::Middleware::Scope::Container' => '0.01',
+        'Plack::Middleware::Header' => '0.04',
     },
     MIN_PERL_VERSION => '5.008001'
 );

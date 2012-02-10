@@ -57,6 +57,7 @@ $app = builder {
             sub { [403,['Content-Type','text/plain'], ['Forbidden']] }
         };
     }
+    enable match_if path(qr!^/ifr/!), 'Header', 'unset' => [qw/X-Frame-Options/];
     enable 'Static',
         path => qr!^/(?:(?:css|js|img)/|favicon\.ico$)!,
             root => $root_dir . '/public';
