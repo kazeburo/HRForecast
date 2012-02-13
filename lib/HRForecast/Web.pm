@@ -218,7 +218,7 @@ get '/ifr/preview/:complex' => sub {
     my @colors;
     for my $id ( @complex ) {
         my $data = $self->data->get_by_id($id);
-        push @colors, $data ? $data->{color} : '#cccccc';
+        push @colors, $data ? $data->{colors} : '#cccccc';
     }
 
     $c->render('pifr.tx', {
