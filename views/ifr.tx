@@ -10,10 +10,11 @@ body {
      padding: 0px;
 }
 </style>
+<title>HRForecast</title>
 </head>
 <body>
 
-<h3 style="margin: 0px;padding: 8px 20px 6px;background-color: #222;"><a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>" target="_blank"><: $metrics.graph_name :></a><small><: $metrics.description :></small></h3>
+<h3 style="margin: 0px;padding: 8px 20px 6px;background-color: #222;"><a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>" target="_blank"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h3>
 
 
 <div class="btn-toolbar" style="position:absolute;top:0px;right:100px;">
@@ -36,7 +37,7 @@ body {
 
 </div>
 
-<div id="graphdiv-0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[ t => $valid.valid('t') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" style="position:absolute;top:45px;bottom:10px;left:5px;right:5px;"></div>
+<div id="graphdiv-0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[ t => $valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" style="position:absolute;top:45px;bottom:10px;left:5px;right:5px;"></div>
 
 <script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.7.1.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>

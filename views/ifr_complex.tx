@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+<link rel="shortcut icon" href="<: $c.req.uri_for('/favicon.ico') :>" type="image/vnd.microsoft.icon" />
+<link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap.min.css') :>">
+<style type="text/css">
+body {
+     margin: 0px;
+     padding: 0px;
+}
+</style>
+<title>HRForecast</title>
+</head>
+<body>
+
+<h3 style="margin: 0px;padding: 8px 20px 6px;background-color: #222;"><a href="<: $c.req.uri_for('/view_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>" target="_blank"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h3>
+
+
+<div class="btn-toolbar" style="position:absolute;top:0px;right:100px;">
+
+<div class="btn-group">
+<a class="btn <: ($valid.valid('t') == 'w') ? 'active' : '' :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t=>'w']) :>">1週間</a>
+<a class="btn <: ($valid.valid('t') == 'm') ? 'active' : '' :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t=>'m']) :>">1ヶ月</a>
+<a class="btn <: ($valid.valid('t') == 'y') ? 'active' : '' :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t=>'y']) :>">1年</a>
+</div>
+
+<div class="btn-group">
+<a class="btn" href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>$valid.valid('t'),d=>1]) :>">CSV</a>
+<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+<ul class="dropdown-menu">
+<li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'w',d=>1]) :>">1週間</a></li>
+<li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'m',d=>1]) :>">1ヶ月</a></li>
+<li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'y',d=>1]) :>">1年</a></li>
+</ul>
+</div><!-- /btn-group -->
+
+</div>
+
+<div id="graphdiv-0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.uri,[ t => $valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" data-stack="<: $metrics.stack :>" style="position:absolute;top:45px;bottom:10px;left:5px;right:5px;"></div>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.7.1.min.js') :>"></script>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/dygraph-combined.js') :>"></script>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/site.js') :>"></script>
+<script type="text/javascript">
+$(function(){
+  $('div.metrics-graph').each(loadGraphs);
+});
+</script>
+</body>
+</html>
+

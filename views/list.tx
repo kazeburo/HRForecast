@@ -17,7 +17,11 @@
 
 : for $metricses ->  $metrics {
 : my $index = $~metrics.index;
-: include "view.tx" { metrics => $metrics, index => $index };
+  : if !$metrics.complex {
+    : include "view.tx" { metrics => $metrics, index => $index };
+  : } else {
+    : include "view_complex.tx" { metrics => $metrics, index => $index };
+  :}
 : } # for metricses
 
 : }

@@ -2,7 +2,7 @@
 
 <div class="row-fluid">
 <div class="span8">
-<h2><a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>"><: $metrics.graph_name :></a><small><: $metrics.description :></small></h2>
+<h2><a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h2>
 </div>
 <div class="span4">
 <div class="btn-toolbar pull-right">
@@ -19,12 +19,19 @@
 </div><!-- /btn-group -->
 
 <div class="btn-group">
+<a class="btn btn-small iframe-src" data-tgl="<: 'iframe-src-'~$index :>" href="<: $c.req.uri_for('/ifr/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[t=>$valid.valid('t')]) :>">&lt;&gt;EMBED</a>
+</div>
+
+<div class="btn-group">
 <a class="btn btn-small" href="<: $c.req.uri_for('/edit/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name) :>">設定</a>
 </div>
 
 </div>
 </div>
 </div>
-
-<div id="graphdiv-$index" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[ t => $valid.valid('t') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" style="height:230px;"></div>
+<form id="<: 'iframe-src-'~$index :>" class="hide well">
+<label>以下のiframeタグにてグラフを他のページに埋め込む事が出来ます</label>
+<input class="span12" value="<: '<iframe src="'~$c.req.uri_for('/ifr/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[t=>$valid.valid('t')])~'" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>' :>" readonly="1" />
+</form>
+<div id="graphdiv-$index" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[ t => $valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" style="height:230px;"></div>
 </div>

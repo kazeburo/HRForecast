@@ -1,0 +1,122 @@
+: cascade base
+
+: around content -> {
+<h1>複合グラフ編集</h1>
+
+<form class="hxrpost form-horizontal" id="edit_complex" method="post" action="<: $c.req.uri_for('/edit_complex/'~$c.stash.metrics.service_name~'/'~$c.stash.metrics.section_name~'/'~$c.stash.metrics.graph_name) :>">
+
+: block form |  fillinform( $c.stash.metrics ) -> {
+<fieldset>
+<legend>グラフの情報</legend>
+<iframe id="complex-preview" data-base="<: $c.req.uri_for('/ifr/preview/') :>" src="<: $c.req.uri_for('/ifr/preview/1') :>" style="width:100%;height:230px" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+</fieldset>
+
+<fieldset>
+<legend>グラフの情報</legend>
+
+<div class="control-group">
+<label class="control-label">パス</label>
+<div class="controls">
+/ <input class="span2" type="text" name="service_name" /> / <input class="span2" type="text" name="section_name" /> / <input class="span2" type="text" name="graph_name" />
+<p class="help-block">グラフを表示するURI(サービス名/セクション名/グラフ名)</p>
+</div>
+</div>
+
+<div class="control-group">
+<label class="control-label">概要</label>
+<div class="controls">
+<input class="span9" type="text" name="description" />
+</div>
+</div>
+
+<div class="control-group">
+<label class="control-label">表示順</label>
+<div class="controls">
+<select name="sort" class="span4">
+<option value="19">19</option>
+<option value="18">18</option>
+<option value="17">17</option>
+<option value="16">16</option>
+<option value="15">15</option>
+<option value="14">14</option>
+<option value="13">13</option>
+<option value="12">12</option>
+<option value="11">11</option>
+<option value="10">10</option>
+<option value="9">9</option>
+<option value="8">8</option>
+<option value="7">7</option>
+<option value="6">6</option>
+<option value="5">5</option>
+<option value="4">4</option>
+<option value="3">3</option>
+<option value="2">2</option>
+<option value="1">1</option>
+<option value="0">0</option>
+</select>
+<p class="help-block">数値が大きい方が先頭</p>
+</div>
+</div>
+
+<div class="control-group">
+<label class="control-label">スタック</label>
+<div class="controls">
+<select name="stack" class="span4">
+<option value="1">する</option>
+<option value="0">しない</option>
+</select>
+<p class="help-block">グラフを積み重ねるか</p>
+</div>
+</div>
+
+</fieldset>
+: }
+
+<fieldset>
+<legend>グラフデータ</legend>
+
+<div class="control-group">
+<label class="control-label">データ</label>
+<div class="controls">
+<select name="path-add" class="span7">
+: for $all_metrics_names -> $metrics {
+<option value="<: $metrics.id :>">/<: $metrics.service_name :>/<: $metrics.section_name :>/<: $metrics.graph_name :></option>
+: }
+</select>
+<button class="btn" id="add-new-row">追加</button>
+<p class="help-block">表示するデータを選択して「追加」ボタンを押してください</p>
+<div>
+<table class="table table-striped" id="data-tbl">
+<tr>
+<th width="10%">&nbsp;</th>
+<th width="80%" style="text-align:left;">パス</th>
+<th width="10%" style="text-align:center;">削除</th>
+</tr>
+: for $stash.metrics.metricses -> $metrics {
+<tr>
+<td><span class="table-order-pointer table-order-up">⬆</span><span class="table-order-pointer table-order-down">⬇</span></td>
+<td style="text-align:left"><input type="hidden" name="path-data" value="<: $metrics.id :>" />/<: $metrics.service_name :>/<: $metrics.section_name :>/<: $metrics.graph_name :></td>
+<td style="text-align:center"><span class="table-order-remove">✖</span></td>
+</tr>
+: }
+</table>
+</div>
+
+</div>
+</div>
+
+
+</fieldset>
+
+<fieldset>
+<div class="form-actions">
+<button type="submit" class="btn btn-primary">変更</button>
+<a href="<: $c.req.uri_for('/list/'~$c.stash.metrics.service_name~'/'~$c.stash.metrics.section_name) :>" class="btn">キャンセル</a>
+<button type="button" class="btn btn-danger hxr_confirm_button" data-confirm="「<: $c.stash.metrics.graph_name:>」を削除しますか？" data-uri="<: $c.req.uri_for('/delete_complex/'~$c.stash.metrics.service_name~'/'~$c.stash.metrics.section_name~'/'~$c.stash.metrics.graph_name) :>">削除</button>
+</div>
+</fieldset>
+
+
+</form>
+
+: }

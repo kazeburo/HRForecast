@@ -61,6 +61,13 @@ sub inflate_complex_row {
     $row->{created_at} = Time::Piece->from_mysql_datetime($row->{created_at});
     $row->{updated_at} = Time::Piece->from_mysql_timestamp($row->{updated_at});
     my $ref =  JSON::decode_json($row->{meta}||'{}');
+    $ref->{uri} = join ":", @{ $ref->{'path-data'} };
+    $ref->{complex} = 1;
+    $ref->{metricses} = [];
+    for my $metrics_id ( @{ $ref->{'path-data'} } ) {
+        my $data = $self->get_by_id($metrics_id);
+        push @{$ref->{metricses}}, $data if $data;
+    }
     my %result = (
         %$ref,
         %$row
@@ -143,10 +150,10 @@ sub delete_metrics {
 
 sub get_data {
     my ($self, $id, $from, $to) = @_;
-
+    my @id = ref $id ? @$id : ($id);
     my $rows = $self->dbh->select_all(
-        'SELECT * FROM data WHERE metrics_id = ? AND (datetime BETWEEN ? AND ?) ORDER BY datetime ASC',
-        $id, localtime($from)->mysql_datetime, localtime($to)->mysql_datetime
+        'SELECT * FROM data WHERE metrics_id IN (?) AND (datetime BETWEEN ? AND ?) ORDER BY datetime ASC',
+        \@id, localtime($from)->mysql_datetime, localtime($to)->mysql_datetime
     );
     my @ret;
     for my $row ( @$rows ) {
@@ -209,6 +216,63 @@ sub get_metricses {
    \@ret;
 }
 
+sub get_all_metrics_name {
+   my $self = shift;
+   $self->dbh->select_all(
+       'SELECT id,service_name,section_name,graph_name FROM metrics ORDER BY service_name, section_name, sort DESC',
+   );
+}
+
+sub get_complex {
+    my ($self, $service, $section, $graph) = @_;
+    my $row = $self->dbh->select_row(
+        'SELECT * FROM complex WHERE service_name = ? AND section_name = ? AND graph_name = ?',
+        $service, $section, $graph
+    );
+    return unless $row;
+    $self->inflate_complex_row($row);
+}
+
+sub get_complex_by_id {
+    my ($self, $id) = @_;
+    my $row = $self->dbh->select_row(
+        'SELECT * FROM complex WHERE id = ?',
+        $id
+    );
+    return unless $row;
+    $self->inflate_complex_row($row);
+}
+
+sub create_complex {
+    my ($self, $service, $section, $graph, $args) = @_;
+    my @update = map { delete $args->{$_} } qw/sort/;
+    my $meta = encode_json($args);
+    $self->dbh->query(
+        'INSERT INTO complex (service_name, section_name, graph_name, sort, meta,  created_at) 
+                         VALUES (?,?,?,?,?,NOW())',
+        $service, $section, $graph, @update, $meta
+    ); 
+    $self->get_complex($service, $section, $graph);
+}
+
+sub update_complex {
+    my ($self, $id, $args) = @_;
+    my @update = map { delete $args->{$_} } qw/service_name section_name graph_name sort/;
+    my $meta = encode_json($args);
+    $self->dbh->query(
+        'UPDATE complex SET service_name=?, section_name=?, graph_name=?, sort=?, meta=? WHERE id=?',
+        @update, $meta, $id
+    );
+}
+
+sub delete_complex {
+    my ($self, $id) = @_;
+    $self->dbh->query(
+        'DELETE FROM complex WHERE id=?',
+        $id
+    );
+}
 
 1;
+
 

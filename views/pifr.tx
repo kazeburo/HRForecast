@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+<link rel="shortcut icon" href="<: $c.req.uri_for('/favicon.ico') :>" type="image/vnd.microsoft.icon" />
+<link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap.min.css') :>">
+<style type="text/css">
+body {
+     margin: 0px;
+     padding: 0px;
+}
+</style>
+</head>
+<body>
+<div id="graphdiv-0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$complex,[ t => $valid.valid('t') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $colors :>" data-stack="<: $valid.valid('stack') :>" style="position:absolute;top:45px;bottom:10px;left:5px;right:5px;"></div>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.7.1.min.js') :>"></script>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/dygraph-combined.js') :>"></script>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/site.js') :>"></script>
+<script type="text/javascript">
+$(function(){
+  $('div.metrics-graph').each(loadGraphs);
+});
+</script>
+</body>
+</html>

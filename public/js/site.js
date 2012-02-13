@@ -20,7 +20,7 @@ function loadGraphs () {
       includeZero: true,
       dateWindow: [ Date.parse(gdiv.data('datewindow')[0]),Date.parse(gdiv.data('datewindow')[1]) ],
       colors: gdiv.data('colors'),
-      stackedGraph: true,
+      stackedGraph: gdiv.data('stack') ? true : false,
       drawPoints: true,
       labelsKMB: true,
       yValueFormatter: formatValue,
@@ -49,6 +49,10 @@ function setHxrpost() {
               helpblock.text(message);
               $(myform).find('[name="'+param+'"]').parents('div.controls').first().append(helpblock);
               $(myform).find('[name="'+param+'"]').parents('div.control-group').first().addClass('error');
+              if ( param == 'path-data' ) {
+                $(myform).find('[name="path-add"]').parents('div.controls').first().append(helpblock);
+                $(myform).find('[name="path-add"]').parents('div.control-group').first().addClass('error');
+              }
             });
         }
       },
@@ -93,4 +97,75 @@ function setHxrConfirmBtn() {
       show: true,
     });
   });
+};
+
+function addNewRow() {
+    var tr = $('<tr></tr>');
+    tr.append('<td><span class="table-order-pointer table-order-up">⬆</span><span class="table-order-pointer table-order-down">⬇</span></td>');
+    tr.append('<td style="text-align:left">'+$('select[name="path-add"] option:selected').html()+'<input type="hidden" name="path-data" value="'+$('select[name="path-add"]').val()+'" /></td>');
+    tr.append('<td style="text-align:center"><span class="table-order-remove">✖</span></td>');
+    tr.appendTo($('table#data-tbl'));
+
+    $('#data-tbl').find('tr:last').addClass('can-table-order');
+    $('#data-tbl').find('span.table-order-up:last').click(tableOrderUp);
+    $('#data-tbl').find('span.table-order-down:last').click(tableOrderDown);
+    $('#data-tbl').find('span.table-order-remove:last').click(tableOrderRemove);
+
+    var myform = $(this).parents('form').first();
+    setTimeout(function(){tablePreview(myform)},10);
+
+    return false;
+};
+
+function tableOrderUp() {
+  var btn = this;
+  var mytr = $(this).parents('tr.can-table-order').first();
+  if ( mytr ) {
+    var prevtr = mytr.prev('tr.can-table-order');
+    mytr.insertBefore(prevtr);
+  }
+  var myform = $(this).parents('form').first();
+  setTimeout(function(){tablePreview(myform)},10);
+  return false;
+}
+
+function tableOrderDown() {
+  var btn = this;
+  var mytr = $(this).parents('tr.can-table-order').first();
+  if ( mytr ) {
+    var nexttr = mytr.next('tr.can-table-order');
+    mytr.insertAfter(nexttr);
+  }
+  var myform = $(this).parents('form').first();
+  setTimeout(function(){tablePreview(myform)},10);
+  return false;
+};
+
+function tableOrderRemove() {
+  var btn = this;
+  var mytr = $(this).parents('tr.can-table-order').first();
+  var myform = $(this).parents('form').first();
+  setTimeout(function(){tablePreview(myform)},10);
+  mytr.detach();
+};
+
+function tablePreview(myform) {
+  var num = myform.find('input[name="path-data"]').length;
+  var uri = $('#complex-preview').data('base');
+  var data = new Array();
+  myform.find('input[name="path-data"]').each(function(){ data.push($(this).val()) });
+  uri += data.join(':');
+  uri += '?stack=' + myform.find('select[name="stack"]').val();
+console.log(uri);
+  $('#complex-preview').attr('src',uri);
+};
+
+function setTablePreview() {
+    var myform = $(this);
+    tablePreview(myform);
+    myform.find('select[name="stack"]').change(
+      function() {
+        setTimeout(function(){ tablePreview(myform) }, 10)
+      }
+    );
 };

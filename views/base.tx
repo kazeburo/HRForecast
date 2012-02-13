@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
-<link rel="shortcut icon" href="<: $c.req.uri_for('/favicon.ico') :>" type="image/vnd.microsoft.icon" />
+<link rel="shortcut icon" href="<: $c.req.uri_for('/favicon.ico',[v=>2]) :>" type="image/vnd.microsoft.icon" />
 <link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap.min.css') :>">
 <title>HRForecast</title>
 <style type="text/css">
@@ -16,6 +16,12 @@ body {
 }
 .modal > form {
   margin: 0;
+}
+.table-order-pointer, .table-order-remove {
+  cursor: pointer;
+}
+.table-order-pointer:hover, .table-order-remove:hover {
+  color: #999;
 }
 </style>
 <link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap-responsive.min.css') :>">
@@ -80,6 +86,13 @@ $(function(){
   $('div.metrics-graph').each(loadGraphs);
   $('form.hxrpost').each(setHxrpost);
   $('button.hxr_confirm_button').each(setHxrConfirmBtn);
+  $('button#add-new-row').click(addNewRow);
+  $('form#edit_complex').each(setTablePreview);
+  $('.iframe-src').click(function(){
+    $('#'+$(this).data('tgl')).toggle();
+    $('#'+$(this).data('tgl')).find('input').first().focus();
+    return false;
+  });
 });
 </script>
 </body>

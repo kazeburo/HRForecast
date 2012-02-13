@@ -111,6 +111,8 @@ $ curl -F number=10 -F datetime=20120206T09:41:31 <: $c.req.uri_for('/') :>api/n
 
 <pre>
 &lt;iframe src="<: $c.req.uri_for('/') :>ifr/:service_name/:section_name/:graph_name" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"&gt;&lt;/iframe&gt;
+
+&lt;iframe src="<: $c.req.uri_for('/') :>ifr_complex/:service_name/:section_name/:graph_name" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"&gt;&lt;/iframe&gt; (複合グラフの場合)
 </pre>
 
 <p>srcのURIパラメータとして、以下が利用できます</p>
