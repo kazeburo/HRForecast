@@ -68,6 +68,7 @@ sub inflate_complex_row {
         my $data = $self->get_by_id($metrics_id);
         push @{$ref->{metricses}}, $data if $data;
     }
+    $ref->{colors} = encode_json([ map { $_->{colors} } @{$ref->{metricses}} ]);
     my %result = (
         %$ref,
         %$row
