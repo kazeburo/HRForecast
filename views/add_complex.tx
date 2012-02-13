@@ -7,10 +7,6 @@
 
 <form class="hxrpost form-horizontal" id="edit_complex" method="post" action="<: $c.req.uri_for('/add_complex') :>">
 
-<fieldset>
-<legend>グラフの情報</legend>
-<iframe id="complex-preview" data-base="<: $c.req.uri_for('/ifr/preview/') :>" src="<: $c.req.uri_for('/ifr/preview/1') :>" style="width:100%;height:230px" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
-</fieldset>
 
 <fieldset>
 
@@ -99,7 +95,11 @@
 </div>
 </div>
 
+</fieldset>
 
+<fieldset>
+<legend>グラフのプレビュー</legend>
+<iframe id="complex-preview" data-base="<: $c.req.uri_for('/ifr/preview/') :>" src="<: $c.req.uri_for('/ifr/preview/1') :>" style="width:100%;height:230px" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
 </fieldset>
 
 <fieldset>
