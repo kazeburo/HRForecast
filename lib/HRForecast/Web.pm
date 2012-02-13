@@ -506,19 +506,25 @@ get '/csv/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
     $c->res;
 };
 
-get '/csv/:complex' => sub {
+my $complex_csv =  sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map{ $result->valid($_) } qw/t from to/);
 
-    my @complex = split /:/, $c->args->{complex};
     my @data;
     my @id;
-    for my $id ( @complex ) {
-        my $data = $self->data->get_by_id($id);
-        next unless $data;
-        push @data, $data;
-        push @id, $data->{id};
+    if ( !$c->stash->{metrics} ) {
+        my @complex = split /:/, $c->args->{complex};
+        for my $id ( @complex ) {
+            my $data = $self->data->get_by_id($id);
+            next unless $data;
+            push @data, $data;
+            push @id, $data->{id};
+        }
+    }
+    else {
+        @data = @{$c->stash->{metrics}->{metricses}};
+        @id = map { $_->{id} } @data;
     }
 
     my ($rows,$opt) = $self->data->get_data(
@@ -552,6 +558,9 @@ get '/csv/:complex' => sub {
     $c->res->body($csv);
     $c->res;    
 };
+
+get '/csv/:complex' => $complex_csv;
+get '/csv_complex/:service_name/:section_name/:graph_name' => [qw/get_complex/] => $complex_csv;
 
 post '/api/:service_name/:section_name/:graph_name' => sub {
     my ( $self, $c )  = @_;
