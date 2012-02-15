@@ -23,6 +23,7 @@ function loadGraphs () {
       stackedGraph: gdiv.data('stack') ? true : false,
       drawPoints: true,
       labelsKMB: true,
+      labelsDivWidth: 300,
       yValueFormatter: formatValue,
     }
   );
