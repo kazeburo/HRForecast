@@ -89,7 +89,7 @@
 <th width="10%" style="text-align:center;">削除</th>
 </tr>
 : for $stash.metrics.metricses -> $metrics {
-<tr>
+<tr class="can-table-order">
 <td><span class="table-order-pointer table-order-up">⬆</span><span class="table-order-pointer table-order-down">⬇</span></td>
 <td style="text-align:left"><input type="hidden" name="path-data" value="<: $metrics.id :>" />/<: $metrics.service_name :>/<: $metrics.section_name :>/<: $metrics.graph_name :></td>
 <td style="text-align:center"><span class="table-order-remove">✖</span></td>

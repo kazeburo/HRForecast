@@ -162,6 +162,9 @@ console.log(uri);
 
 function setTablePreview() {
     var myform = $(this);
+    $('#data-tbl').find('span.table-order-up').click(tableOrderUp);
+    $('#data-tbl').find('span.table-order-down').click(tableOrderDown);
+    $('#data-tbl').find('span.table-order-remove').click(tableOrderRemove);
     tablePreview(myform);
     myform.find('select[name="stack"]').change(
       function() {
