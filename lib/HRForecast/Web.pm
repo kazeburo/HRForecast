@@ -539,7 +539,7 @@ my $complex_csv =  sub {
         $date_group{$datetime}->{$row->{metrics_id}} = $row->{number};
     }
 
-    my $csv = sprintf("Date,%s\n", join ",", map { $_->{service_name}.'/'.$_->{section_name}.'/'.$_->{graph_name} } @data);
+    my $csv = sprintf("Date,%s\n", join ",", map { '/'.$_->{service_name}.'/'.$_->{section_name}.'/'.$_->{graph_name} } @data);
     foreach my $key ( sort keys %date_group ) {
         $key =~ m!^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$!;
         my $datetime = sprintf "%s/%s/%s %s:%s:%s", $1, $2, $3, $4, $5, $6;
