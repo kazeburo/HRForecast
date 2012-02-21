@@ -11,6 +11,14 @@ function formatValue(v) {
   return String(round(v / Math.pow(10, magnitude * 3), 2)) +
     suffixes[magnitude];
 }
+function addFigure(str) {
+  var num = new String(str).replace(/,/g, "");
+  while(num != (num = num.replace(/^(-?\d+)(\d{3})/, "$1,$2")));
+  return num;
+}
+function addFigureVal(str) {
+  return " "+addFigure(str);
+}
 function loadGraphs () {
   var gdiv = $(this);
   g = new Dygraph(
@@ -26,14 +34,14 @@ function loadGraphs () {
       labelsDiv: 'label-'+gdiv.data('index'),
       labelsSeparateLines: true,
       legend: 'always',
-      yValueFormatter: formatValue,
+      yValueFormatter: addFigureVal,
       highlightCallback: function(e, x, pts, row){
           var total = 0;
           $.each(pts,function(idx,val){
               total += val.yval;
           });
           if ( gdiv.data('stack') ) {
-              $('#total-'+gdiv.data('index')).html('<em>TOTAL</em>:'+formatValue(total));
+              $('#total-'+gdiv.data('index')).html('<em>TOTAL</em>:'+addFigureVal(total));
           }
       },
       unhighlightCallback: function(e) {
