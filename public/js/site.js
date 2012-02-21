@@ -24,6 +24,8 @@ function loadGraphs () {
       drawPoints: true,
       labelsKMB: true,
       labelsDiv: 'label-'+gdiv.data('index'),
+      labelsSeparateLines: true,
+      legend: 'always',
       yValueFormatter: formatValue,
       highlightCallback: function(e, x, pts, row){
           var total = 0;

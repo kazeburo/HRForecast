@@ -37,11 +37,13 @@ body {
 
 </div>
 
-<div id="graphdiv-0" data-index="0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.uri,[ t => $valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" data-stack="<: $metrics.stack :>" style="position:absolute;top:45px;bottom:45px;left:5px;right:5px;"></div>
-<div style="text-align:center;position:absolute;bottom:5px;left:5px;right:5px;">
+<div id="graphdiv-0" data-index="0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.uri,[ t => $valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" data-stack="<: $metrics.stack :>" style="position:absolute;top:45px;bottom:5px;left:5px;right:160px;"></div>
+
+<div style="position:absolute;width:158px;right:0px;top:45px;">
 <span id="label-0"></span>
 <span id="total-0"></span>
 </div>
+
 <script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.7.1.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/dygraph-combined.js') :>"></script>
