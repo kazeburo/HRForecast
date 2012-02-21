@@ -14,7 +14,7 @@ body {
 </head>
 <body>
 
-<h3 style="margin: 0px;padding: 8px 20px 6px;background-color: #222;"><a href="<: $c.req.uri_for('/view_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>" target="_blank"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h3>
+<h3 style="margin: 0px;padding: 8px 20px 7px;border-bottom: solid 1px #999;"><a href="<: $c.req.uri_for('/view_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>" target="_blank"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h3>
 
 
 <div class="btn-toolbar" style="position:absolute;top:-2px;right:100px;">
