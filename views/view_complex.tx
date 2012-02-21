@@ -36,7 +36,8 @@
 
 <div id="graphdiv-<: $index :>" data-index="<: $index :>" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.uri,[ t => $valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" data-stack="<: $metrics.stack :>" style="height:230px;"></div>
 </div>
-<div style="text-align:center;height:20px;margin-top:2px;">
+<div style="text-align:center;margin-top:2px;">
 <span id="label-<: $index :>"></span>
 <span id="total-<: $index :>"></span>
+&nbsp;
 </div>
