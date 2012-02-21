@@ -34,11 +34,11 @@
 <input class="span12" value="<: '<iframe src="'~$c.req.uri_for('/ifr/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[t=>$valid.valid('t')])~'" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>' :>" readonly="1" />
 </form>
 <div style="position:relative">
-<div style="position:absolute;width:158px;right:0px;top:0px;">
+<div style="position:absolute;width:198px;right:0px;top:0px;word-wrap:break-word;">
 <span id="label-<: $index :>"></span>
 <span id="total-<: $index :>"></span>
 &nbsp;
 </div>
-<div id="graphdiv-<: $index :>" data-index="<: $index :>" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[ t => $valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" style="height:230px;margin-right:160px;"></div>
+<div id="graphdiv-<: $index :>" data-index="<: $index :>" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,[ t => $valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" style="height:230px;margin-right:200px;"></div>
 </div>
 </div>

@@ -13,9 +13,9 @@ body {
 </head>
 <body>
 
-<div id="graphdiv-0" data-index="0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$complex,[ t => $valid.valid('t') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $colors :>" data-stack="<: $valid.valid('stack') :>" style="position:absolute;top:5px;left:5px;bottom:5px;right:160px;"></div>
+<div id="graphdiv-0" data-index="0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$complex,[ t => $valid.valid('t') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $colors :>" data-stack="<: $valid.valid('stack') :>" style="position:absolute;top:5px;left:5px;bottom:5px;right:200px;"></div>
 
-<div style="position:absolute;width:158px;right:0px;top:5px;">
+<div style="position:absolute;width:198px;right:0px;top:5px;word-wrap:break-word;">
 <span id="label-0"></span>
 <span id="total-0"></span>
 </div>
