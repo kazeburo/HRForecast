@@ -23,8 +23,20 @@ function loadGraphs () {
       stackedGraph: gdiv.data('stack') ? true : false,
       drawPoints: true,
       labelsKMB: true,
-      labelsDivWidth: 300,
+      labelsDiv: 'label-'+gdiv.data('index'),
       yValueFormatter: formatValue,
+      highlightCallback: function(e, x, pts, row){
+          var total = 0;
+          $.each(pts,function(idx,val){
+              total += val.yval;
+          });
+          if ( gdiv.data('stack') ) {
+              $('#total-'+gdiv.data('index')).html('<em>TOTAL</em>:'+formatValue(total));
+          }
+      },
+      unhighlightCallback: function(e) {
+          $('#total-'+gdiv.data('index')).html('');
+      }
     }
   );
 };

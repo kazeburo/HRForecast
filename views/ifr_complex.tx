@@ -17,7 +17,7 @@ body {
 <h3 style="margin: 0px;padding: 8px 20px 6px;background-color: #222;"><a href="<: $c.req.uri_for('/view_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>" target="_blank"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h3>
 
 
-<div class="btn-toolbar" style="position:absolute;top:0px;right:100px;">
+<div class="btn-toolbar" style="position:absolute;top:-2px;right:100px;">
 
 <div class="btn-group">
 <a class="btn <: ($valid.valid('t') == 'w') ? 'active' : '' :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t=>'w']) :>">1週間</a>
@@ -37,7 +37,11 @@ body {
 
 </div>
 
-<div id="graphdiv-0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.uri,[ t => $valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" data-stack="<: $metrics.stack :>" style="position:absolute;top:45px;bottom:10px;left:5px;right:5px;"></div>
+<div id="graphdiv-0" data-index="0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.uri,[ t => $valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" data-stack="<: $metrics.stack :>" style="position:absolute;top:45px;bottom:30px;left:5px;right:5px;"></div>
+<div style="text-align:center;position:absolute;bottom:5px;left:5px;right:5px;">
+<span id="label-0"></span>
+<span id="total-0"></span>
+</div>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.7.1.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/dygraph-combined.js') :>"></script>

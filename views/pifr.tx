@@ -12,7 +12,11 @@ body {
 </style>
 </head>
 <body>
-<div id="graphdiv-0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$complex,[ t => $valid.valid('t') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $colors :>" data-stack="<: $valid.valid('stack') :>" style="position:absolute;top:45px;bottom:10px;left:5px;right:5px;"></div>
+<div id="graphdiv-0" data-index="0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$complex,[ t => $valid.valid('t') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $colors :>" data-stack="<: $valid.valid('stack') :>" style="position:absolute;top:45px;bottom:30px;left:5px;right:5px;"></div>
+<div style="text-align:center;position:absolute;bottom:5px;left:5px;right:5px;">
+<span id="label-0"></span>
+<span id="total-0"></span>
+</div>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.7.1.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/dygraph-combined.js') :>"></script>
