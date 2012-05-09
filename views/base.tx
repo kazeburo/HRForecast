@@ -23,6 +23,8 @@ body {
 .table-order-pointer:hover, .table-order-remove:hover {
   color: #999;
 }
+.dygraph-closest-legend > span { display: none; }
+.dygraph-closest-legend > span.highlight { display: inline; }
 </style>
 <link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap-responsive.min.css') :>">
 </head>

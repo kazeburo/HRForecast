@@ -1,4 +1,4 @@
-var suffixes = ['', 'k', 'M', 'G', 'T'];
+var suffixes = ['', 'k', 'M', 'G', 'T','P'];
 function round(num, places) {
   var shift = Math.pow(10, places);
   return Math.round(num * shift)/shift;
@@ -21,6 +21,11 @@ function addFigureVal(str) {
 }
 function loadGraphs () {
   var gdiv = $(this);
+  var limit = 8;
+  $('#'+'label-'+gdiv.data('index')).removeClass('dygraph-closest-legend');
+  if ( gdiv.data('colors').length > limit ) {
+      $('#'+'label-'+gdiv.data('index')).addClass('dygraph-closest-legend');
+  }
   g = new Dygraph(
     gdiv.context,
     gdiv.data('csv'),
@@ -29,11 +34,25 @@ function loadGraphs () {
       dateWindow: [ Date.parse(gdiv.data('datewindow')[0]),Date.parse(gdiv.data('datewindow')[1]) ],
       colors: gdiv.data('colors'),
       stackedGraph: gdiv.data('stack') ? true : false,
-      drawPoints: true,
+      drawPoints: false,
+      strokeWidth: 1,
+      strokeBorderWidth: gdiv.data('colors').length > limit ? 1 : null,
+      highlightCircleSize: 3,
+      highlightSeriesOpts: gdiv.data('colors').length > limit ? {
+          strokeWidth: 2,
+          strokeBorderWidth: 1,
+          highlightCircleSize: 5,
+      } : {},
       labelsKMB: true,
       labelsDiv: 'label-'+gdiv.data('index'),
-      labelsSeparateLines: true,
-      legend: 'always',
+      labelsSeparateLines: gdiv.data('colors').length > limit ? false : true,
+      legend: gdiv.data('colors').length > limit ? 'onmouseover' : 'always',
+      axes: {
+          x: {
+              pixelsPerLabel: 28,
+          }
+      },
+      axisLabelFontSize: 12,
       yValueFormatter: addFigureVal,
       highlightCallback: function(e, x, pts, row){
           var total = 0;
@@ -41,7 +60,7 @@ function loadGraphs () {
               total += val.yval;
           });
           if ( gdiv.data('stack') ) {
-              $('#total-'+gdiv.data('index')).html('<em>TOTAL</em>:'+addFigureVal(total));
+              $('#total-'+gdiv.data('index')).html('<br /><strong>TOTAL</strong>:'+addFigureVal(total));
           }
       },
       unhighlightCallback: function(e) {

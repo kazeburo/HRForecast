@@ -378,7 +378,7 @@ post '/add_complex' => sub {
         },
         '@path-data' => {
             rule => [
-                [['@SELECTED_NUM',1,10], 'データが正しくありません'],
+                [['@SELECTED_NUM',1,30], 'データは30件までにしてください'],
                 ['NOT_NULL','データが正しくありません'],
                 ['NATURAL', 'データが正しくありません'],
             ],
@@ -445,7 +445,7 @@ post '/edit_complex/:service_name/:section_name/:graph_name' => [qw/sidebar get_
         },
         '@path-data' => {
             rule => [
-                [['@SELECTED_NUM',1,10], 'データが正しくありません'],
+                [['@SELECTED_NUM',1,30], 'データは30件までにしてください'],
                 ['NOT_NULL','データが正しくありません'],
                 ['NATURAL', 'データが正しくありません'],
             ],
