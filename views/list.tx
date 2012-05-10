@@ -7,13 +7,27 @@
 <: $c.args.section_name :></span>
 </h1>
 
+: my $path_info = $c.req.path_info;
 <div class="pagination pagination-right">
 <ul>
+: if $path_info.match('^/view/') {
+<li class="<: ($valid.valid('t') == 'w') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'w']) :>">1週間</a></li>
+<li class="<: ($valid.valid('t') == 'm') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'m']) :>">1ヶ月</a></li>
+<li class="<: ($valid.valid('t') == 'y') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'y']) :>">1年</a></li>
+
+: } else if $path_info.match('^/view_complex/') { 
+<li class="<: ($valid.valid('t') == 'w') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view_complex/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'w']) :>">1週間</a></li>
+<li class="<: ($valid.valid('t') == 'm') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view_complex/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'m']) :>">1ヶ月</a></li>
+<li class="<: ($valid.valid('t') == 'y') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view_complex/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'y']) :>">1年</a></li>
+
+: } else {
 <li class="<: ($valid.valid('t') == 'w') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/list/'~$c.args.service_name~'/'~$c.args.section_name, [t=>'w']) :>">1週間</a></li>
 <li class="<: ($valid.valid('t') == 'm') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/list/'~$c.args.service_name~'/'~$c.args.section_name, [t=>'m']) :>">1ヶ月</a></li>
 <li class="<: ($valid.valid('t') == 'y') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/list/'~$c.args.service_name~'/'~$c.args.section_name, [t=>'y']) :>">1年</a></li>
+: }
 </ul>
 </div>
+
 
 : for $metricses ->  $metrics {
 : my $index = $~metrics.index;

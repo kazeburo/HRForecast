@@ -9,9 +9,8 @@ body {
      margin: 0px;
      padding: 0px;
 }
-.dygraph-closest-legend > span { display: none; }
-.dygraph-closest-legend > span.highlight { display: inline; }
 </style>
+<link rel="stylesheet" href="<: $c.req.uri_for('/css/site.css') :>">
 <title>HRForecast</title>
 </head>
 <body>

@@ -23,8 +23,11 @@ function loadGraphs () {
   var gdiv = $(this);
   var limit = 8;
   $('#'+'label-'+gdiv.data('index')).removeClass('dygraph-closest-legend');
+  $('#'+'label-'+gdiv.data('index')).removeClass('dygraph-highlighted-legend');
   if ( gdiv.data('colors').length > limit ) {
       $('#'+'label-'+gdiv.data('index')).addClass('dygraph-closest-legend');
+  } else if ( gdiv.data('colors').length > 1 ) {
+      $('#'+'label-'+gdiv.data('index')).addClass('dygraph-highlighted-legend');
   }
   g = new Dygraph(
     gdiv.context,
@@ -38,11 +41,14 @@ function loadGraphs () {
       strokeWidth: 1,
       strokeBorderWidth: gdiv.data('colors').length > limit ? 1 : null,
       highlightCircleSize: 3,
+      highlightSeriesBackgroundAlpha: gdiv.data('colors').length > limit ? 0.5 : 1,
       highlightSeriesOpts: gdiv.data('colors').length > limit ? {
           strokeWidth: 2,
           strokeBorderWidth: 1,
           highlightCircleSize: 5,
-      } : {},
+      } : {
+          highlightCircleSize: gdiv.data('colors').length > 1 ? 5 : 3,
+      },
       labelsKMB: true,
       labelsDiv: 'label-'+gdiv.data('index'),
       labelsSeparateLines: gdiv.data('colors').length > limit ? false : true,
