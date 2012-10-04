@@ -61,6 +61,7 @@ sub inflate_complex_row {
     $row->{created_at} = Time::Piece->from_mysql_datetime($row->{created_at});
     $row->{updated_at} = Time::Piece->from_mysql_timestamp($row->{updated_at});
     my $ref =  JSON::decode_json($row->{meta}||'{}');
+    $ref->{'path-data'} = [ $ref->{'path-data'} ] if ! ref $ref->{'path-data'};
     $ref->{uri} = join ":", @{ $ref->{'path-data'} };
     $ref->{complex} = 1;
     $ref->{metricses} = [];
