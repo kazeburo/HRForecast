@@ -33,6 +33,10 @@ sub dbh {
     );
 }
 
+sub round_interval {
+    HRForecast->config->{round_interval} || 3600;
+}
+
 sub inflate_row {
     my ($self, $row) = @_;
     $row->{created_at} = Time::Piece->from_mysql_datetime($row->{created_at});
@@ -115,7 +119,7 @@ sub update {
     }
     $dbh->commit;
 
-    my $fixed_timestamp = $timestamp - ($timestamp % 3600);
+    my $fixed_timestamp = $timestamp - ($timestamp % $self->round_interval);
     $dbh->query(
         'REPLACE data SET metrics_id = ?, datetime = ?, number = ?',
         $metrics->{id}, localtime($fixed_timestamp)->mysql_datetime, $number
