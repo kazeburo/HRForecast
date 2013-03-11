@@ -573,8 +573,7 @@ post '/api/:service_name/:section_name/:graph_name' => sub {
         },
         'datetime' => {
             rule => [
-                ['NOT_NULL','datetime is null'],
-                [ sub { HTTP::Date::str2time($_[1]) } ,'datetime is not null']                
+                [ sub { return 1 unless $_[1]; HTTP::Date::str2time($_[1]) } ,'datetime is not valid']
             ],
         },
     ]);
@@ -588,9 +587,10 @@ post '/api/:service_name/:section_name/:graph_name' => sub {
         return $res;
     }
 
+    my $time = $result->valid('datetime') ? HTTP::Date::str2time($result->valid('datetime')) : time;
     my $ret = $self->data->update(
         $c->args->{service_name}, $c->args->{section_name}, $c->args->{graph_name},
-        $result->valid('number'), HTTP::Date::str2time($result->valid('datetime'))
+        $result->valid('number'), $time
     );
     $c->render_json({ error => 0 });
 };
