@@ -27,7 +27,14 @@ body {
 </div>
 
 <div class="btn-group">
-<a class="btn" href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>$valid.valid('t'),d=>1]) :>">CSV</a>
+<a class="btn" href="<: $c.req.uri_for('/csv/'~$metrics.uri,[
+    t=>$valid.valid('t'),
+    from=>$valid.valid('from'),
+    to=>$valid.valid('to'),
+    period=>$valid.valid('period'),
+    offset=>$valid.valid('offset'),
+    d=>1,
+]) :>">CSV</a>
 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
 <ul class="dropdown-menu">
 <li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'w',d=>1]) :>">1週間</a></li>
@@ -38,7 +45,7 @@ body {
 
 </div>
 
-<div id="graphdiv-0" data-index="0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.uri,[ t => $valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to') ]) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" data-stack="<: $metrics.stack :>" style="position:absolute;top:45px;bottom:5px;left:5px;right:200px;"></div>
+<div id="graphdiv-0" data-index="0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.uri,$metrics_params) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" data-stack="<: $metrics.stack :>" style="position:absolute;top:45px;bottom:5px;left:5px;right:200px;"></div>
 
 <div style="position:absolute;width:198px;right:0px;top:45px;word-wrap:break-word;">
 <span id="label-0"></span>
