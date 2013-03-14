@@ -11,3 +11,5 @@ MANIFEST.bak
 *.sw[po]
 *~
 .DS_Store
+MYMETA.*
+
