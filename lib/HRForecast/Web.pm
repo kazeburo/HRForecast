@@ -23,7 +23,14 @@ sub data {
 
 sub calc_term {
     my $self = shift;
-    my ($term, $from, $to) = @_;
+    my %args = @_;
+
+    my $term   = $args{t};
+    my $from   = $args{from};
+    my $to     = $args{to};
+    my $offset = $args{offset};
+    my $period = $args{period};
+
     if ( $term eq 'w' ) {
         $from = time - 86400 * 10;
         $to = time;
@@ -35,6 +42,10 @@ sub calc_term {
     elsif ( $term eq 'y' ) {
         $from = time - 86400 * 400;
         $to = time;
+    }
+    elsif ( $term eq 'range' ) {
+        $to = time - $offset;
+        $from = $to - $period;
     }
     else {
         $from = HTTP::Date::str2time($from);
@@ -113,13 +124,25 @@ my $metrics_validator = [
     't' => {
         default => 'm',
         rule => [
-            [['CHOICE',qw/w m y c/],'invalid browse term'],
+            [['CHOICE',qw/w m y c range/],'invalid browse term'],
         ],
     },
     'from' => {
         default => localtime(time-86400*35)->strftime('%Y/%m/%d %T'),
         rule => [
             [sub{ HTTP::Date::str2time($_[1]) }, 'invalid From datetime'],
+        ],
+    },
+    'period' => {
+        default => 0,
+        rule => [
+            ['UINT', 'invalid interval'],
+        ],
+    },
+    'offset' => {
+        default => 0,
+        rule => [
+            ['UINT', 'invalid offset'],
         ],
     },
     'to' => {
@@ -142,15 +165,30 @@ my $metrics_validator = [
     },
 ];
 
+sub _build_metrics_params {
+    my $result = shift;
+
+    my $term = $result->valid('t');
+    my @params;
+    push @params, 't', $term;
+    if ($term eq 'range') {
+        push @params, $_ => $result->valid($_) for qw/period offset/;
+    }
+    elsif ($term eq 'c') {
+        push @params, $_ => $result->valid($_) for qw/from to/;
+    }
+    \@params;
+}
+
 get '/list/:service_name/:section_name' => [qw/sidebar/] => sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my $rows = $self->data->get_metricses(
         $c->args->{service_name}, $c->args->{section_name}
     );
-    my ($from ,$to) = $self->calc_term( map {$result->valid($_)} qw/t from to/);
+    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
     $c->render('list.tx',{ 
-        metricses => $rows, valid => $result, 
+        metricses => $rows, valid => $result, metrics_params => _build_metrics_params($result),
         date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
                                     $to->strftime('%Y/%m/%d %T')]),
     });
@@ -159,10 +197,10 @@ get '/list/:service_name/:section_name' => [qw/sidebar/] => sub {
 get '/view/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/] => sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
-    my ($from ,$to) = $self->calc_term( map {$result->valid($_)} qw/t from to/);
+    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
     $c->render('list.tx', {
         metricses => [$c->stash->{metrics}],
-        valid => $result, 
+        valid => $result, metrics_params => _build_metrics_params($result),
         date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
                                     $to->strftime('%Y/%m/%d %T')]),        
     });
@@ -171,10 +209,10 @@ get '/view/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/]
 get '/view_complex/:service_name/:section_name/:graph_name' => [qw/sidebar get_complex/] => sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
-    my ($from ,$to) = $self->calc_term( map {$result->valid($_)} qw/t from to/);
+    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
     $c->render('list.tx', {
         metricses => [$c->stash->{metrics}],
-        valid => $result, 
+        valid => $result, metrics_params => _build_metrics_params($result),
         date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
                                     $to->strftime('%Y/%m/%d %T')]),        
     });
@@ -183,10 +221,10 @@ get '/view_complex/:service_name/:section_name/:graph_name' => [qw/sidebar get_c
 get '/ifr/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
-    my ($from ,$to) = $self->calc_term( map {$result->valid($_)} qw/t from to/);
+    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
     $c->render('ifr.tx', {
         metrics => $c->stash->{metrics},
-        valid => $result, 
+        valid => $result, metrics_params => _build_metrics_params($result),
         date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
                                     $to->strftime('%Y/%m/%d %T')]),        
     });
@@ -195,10 +233,10 @@ get '/ifr/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
 get '/ifr_complex/:service_name/:section_name/:graph_name' => [qw/get_complex/] => sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
-    my ($from ,$to) = $self->calc_term( map {$result->valid($_)} qw/t from to/);
+    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
     $c->render('ifr_complex.tx', {
         metrics => $c->stash->{metrics},
-        valid => $result, 
+        valid => $result, metrics_params => _build_metrics_params($result),
         date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
                                     $to->strftime('%Y/%m/%d %T')]),        
     });
@@ -212,7 +250,7 @@ get '/ifr/preview/' => sub {
 get '/ifr/preview/:complex' => sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
-    my ($from ,$to) = $self->calc_term( map{ $result->valid($_) } qw/t from to/);
+    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
 
     my @complex = split /:/, $c->args->{complex};
     my @colors;
@@ -223,7 +261,7 @@ get '/ifr/preview/:complex' => sub {
 
     $c->render('pifr.tx', {
         complex => $c->args->{complex},
-        valid => $result, 
+        valid => $result, metrics_params => _build_metrics_params($result),
         colors => encode_json(\@colors),
         date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
                                     $to->strftime('%Y/%m/%d %T')]),        
@@ -485,7 +523,7 @@ post '/delete_complex/:service_name/:section_name/:graph_name' => [qw/get_comple
 get '/csv/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
-    my ($from ,$to) = $self->calc_term( map{ $result->valid($_) } qw/t from to/);
+    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
     my ($rows,$opt) = $self->data->get_data(
         $c->stash->{metrics}->{id},
         $from, $to
@@ -509,7 +547,7 @@ get '/csv/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
 my $complex_csv =  sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
-    my ($from ,$to) = $self->calc_term( map{ $result->valid($_) } qw/t from to/);
+    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
 
     my @data;
     my @id;
