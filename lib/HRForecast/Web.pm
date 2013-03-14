@@ -117,13 +117,13 @@ my $metrics_validator = [
         ],
     },
     'from' => {
-        default => localtime(time-86400*35)->strftime('%Y/%m/%d %T'),
+        default => sub { localtime(time-86400*35)->strftime('%Y/%m/%d %T') },
         rule => [
             [sub{ HTTP::Date::str2time($_[1]) }, 'invalid From datetime'],
         ],
     },
     'to' => {
-        default => localtime()->strftime('%Y/%m/%d %T'),
+        default => sub { localtime()->strftime('%Y/%m/%d %T') },
         rule => [
             [sub{ HTTP::Date::str2time($_[1]) }, 'invalid To datetime'],
         ],
@@ -572,8 +572,8 @@ post '/api/:service_name/:section_name/:graph_name' => sub {
             ],
         },
         'datetime' => {
+            default => sub  { HTTP::Date::time2str(time) }
             rule => [
-                ['NOT_NULL','datetime is null'],
                 [ sub { HTTP::Date::str2time($_[1]) } ,'datetime is not null']                
             ],
         },

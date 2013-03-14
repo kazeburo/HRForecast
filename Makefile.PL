@@ -4,7 +4,7 @@ WriteMakefile(
     NAME          => 'HRForecast',
     VERSION_FROM  => 'lib/HRForecast.pm',
     PREREQ_PM     => {
-        'Kossy' =>  '0.06',
+        'Kossy' =>  '0.14',
         'DBIx::Sunny' =>  '0.14',
         'DBD::mysql' => '4.018',
         'Time::Piece' => '1.15',
