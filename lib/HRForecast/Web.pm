@@ -610,9 +610,9 @@ post '/api/:service_name/:section_name/:graph_name' => sub {
             ],
         },
         'datetime' => {
-            default => sub  { HTTP::Date::time2str(time) }
+            default => sub  { HTTP::Date::time2str(time) },
             rule => [
-                [ sub { HTTP::Date::str2time($_[1]) } ,'datetime is not null']                
+                [ sub { HTTP::Date::str2time($_[1]) } ,'datetime is not null']
             ],
         },
     ]);
