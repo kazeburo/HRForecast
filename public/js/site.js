@@ -19,6 +19,53 @@ function addFigure(str) {
 function addFigureVal(str) {
   return " "+addFigure(str);
 }
+
+function throttle(callback, wait) {
+  var timer;
+  return function() {
+    if (timer) return;
+    timer = setTimeout(function() {
+      timer = null;
+      callback();
+    }, wait);
+  };
+}
+waitForAppear = (function(){
+  var jobs = {};
+  var $window = $(window);
+  var elementHasAppeared = function(window_top, window_bottom, $element) {
+    var element_middle = $element.offset().top + $element.height() / 2;
+    return window_top < element_middle && element_middle < window_bottom;
+  };
+  $window.scroll(throttle(function() {
+    var window_top = $window.scrollTop();
+    var window_bottom = window_top + $window.height();
+    $.each(jobs, function(key, pair) {
+      var $element = pair[0];
+      var callback = pair[1];
+      if (elementHasAppeared(window_top, window_bottom, $element)) {
+        callback();
+        delete jobs[key];
+      }
+    });
+  }, 200));
+  return function(key, $element, callback) {
+    var window_top = $window.scrollTop();
+    var window_bottom = window_top + $window.height();
+    if (elementHasAppeared(window_top, window_bottom, $element)) {
+      setTimeout(callback, 0);
+      return;
+    }
+    jobs[key] = [$element, callback];
+  };
+})();
+function loadGraphsLater () {
+  var element = this;
+  var $element = $(this);
+  waitForAppear($element.attr('data-csv'), $element, function() {
+    loadGraphs.apply(element);
+  });
+}
 function loadGraphs () {
   var gdiv = $(this);
   var limit = 8;
