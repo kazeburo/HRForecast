@@ -13,3 +13,10 @@ MANIFEST.bak
 .DS_Store
 MYMETA.*
 /extlib/
+/HRForecast-*
+/.build
+/_build_params
+/Build
+!Build/
+!META.json
+!LICENSE
