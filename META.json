@@ -1,0 +1,82 @@
+{
+   "abstract" : "A Graphing/Visualization Tool",
+   "author" : [
+      "Masahiro Nagano C<< <kazeburo {at} gmail.com> >>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Minilla/v0.4.2, CPAN::Meta::Converter version 2.120921",
+   "license" : [
+      "unknown"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "HRForecast",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples",
+         "author"
+      ]
+   },
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "CPAN::Meta" : "0",
+            "CPAN::Meta::Prereqs" : "0",
+            "Module::Build" : "0.38"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Test::CPAN::Meta" : "0",
+            "Test::MinimumVersion" : "0.10108",
+            "Test::Pod" : "1.41",
+            "Test::Spellunker" : "v0.2.2"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "DBD::mysql" : "4.018",
+            "DBIx::Sunny" : "0.14",
+            "HTTP::Date" : "0",
+            "Kossy" : "0.14",
+            "List::MoreUtils" : "0",
+            "Log::Minimal" : "0.09",
+            "Parallel::Scoreboard" : "0.03",
+            "Plack::Builder::Conditionals" : "0.03",
+            "Plack::Middleware::Header" : "0.04",
+            "Plack::Middleware::Scope::Container" : "0.01",
+            "Scope::Container::DBI" : "0.03",
+            "Starlet" : "0.14",
+            "Time::Piece" : "1.15",
+            "Time::Piece::MySQL" : "0.06"
+         }
+      }
+   },
+   "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/lestrrat/HRForecast/issues"
+      },
+      "homepage" : "https://github.com/lestrrat/HRForecast",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/lestrrat/HRForecast.git",
+         "web" : "https://github.com/lestrrat/HRForecast"
+      }
+   },
+   "version" : "0.01",
+   "x_contributors" : [
+      "issm <issmxx@gmail.com>",
+      "Masayuki Matsuki <y.songmu@gmail.com>",
+      "Spring_MT <today.is.sky.blue.sky@gmail.com>",
+      "hitode909 <hitode909@gmail.com>",
+      "Masahiro Nagano <kazeburo@gmail.com>"
+   ]
+}
