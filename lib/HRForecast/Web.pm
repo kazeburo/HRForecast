@@ -416,7 +416,7 @@ post '/add_complex' => sub {
         },
         '@path-data' => {
             rule => [
-                [['@SELECTED_NUM',1,30], 'データは30件までにしてください'],
+                [['@SELECTED_NUM',1,100], 'データは100件までにしてください'],
                 ['NOT_NULL','データが正しくありません'],
                 ['NATURAL', 'データが正しくありません'],
             ],
@@ -483,7 +483,7 @@ post '/edit_complex/:service_name/:section_name/:graph_name' => [qw/sidebar get_
         },
         '@path-data' => {
             rule => [
-                [['@SELECTED_NUM',1,30], 'データは30件までにしてください'],
+                [['@SELECTED_NUM',1,100], 'データは100件までにしてください'],
                 ['NOT_NULL','データが正しくありません'],
                 ['NATURAL', 'データが正しくありません'],
             ],
@@ -606,13 +606,13 @@ post '/api/:service_name/:section_name/:graph_name' => sub {
         'number' => {
             rule => [
                 ['NOT_NULL','number is null'],
-                ['INT','number is not null']
+                ['INT','number is not int']
             ],
         },
         'datetime' => {
             default => sub  { HTTP::Date::time2str(time) },
             rule => [
-                [ sub { HTTP::Date::str2time($_[1]) } ,'datetime is not null']                
+                [ sub { HTTP::Date::str2time($_[1]) } ,'datetime is not null']
             ],
         },
     ]);

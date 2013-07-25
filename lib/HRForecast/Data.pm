@@ -204,11 +204,11 @@ sub get_metricses {
    my $self = shift;
    my ($service_name, $section_name) = @_;
    my $rows = $self->dbh->select_all(
-       'SELECT * FROM metrics WHERE service_name = ? AND section_name = ? ORDER BY sort DESC',
+       'SELECT * FROM metrics WHERE service_name = ? AND section_name = ? ORDER BY sort DESC, graph_name',
        $service_name, $section_name
    );
    my $complex_rows = $self->dbh->select_all(
-       'SELECT * FROM complex WHERE service_name = ? AND section_name = ? ORDER BY sort DESC',
+       'SELECT * FROM complex WHERE service_name = ? AND section_name = ? ORDER BY sort DESC, graph_name',
        $service_name, $section_name
    );
    my @ret;
@@ -225,7 +225,7 @@ sub get_metricses {
 sub get_all_metrics_name {
    my $self = shift;
    $self->dbh->select_all(
-       'SELECT id,service_name,section_name,graph_name FROM metrics ORDER BY service_name, section_name, sort DESC',
+       'SELECT id,service_name,section_name,graph_name FROM metrics ORDER BY service_name, section_name, sort DESC, graph_name',
    );
 }
 

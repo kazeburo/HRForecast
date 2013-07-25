@@ -85,7 +85,7 @@ body {
 <script type="text/javascript" src="<: $c.req.uri_for('/js/site.js') :>"></script>
 <script type="text/javascript">
 $(function(){
-  $('div.metrics-graph').each(loadGraphs);
+  $('div.metrics-graph').each(loadGraphsLater);
   $('form.hxrpost').each(setHxrpost);
   $('button.hxr_confirm_button').each(setHxrConfirmBtn);
   $('button#add-new-row').click(addNewRow);
