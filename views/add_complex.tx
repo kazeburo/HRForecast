@@ -1,5 +1,9 @@
 : cascade base
 
+: around additonal_meta -> {
+<meta name="robots" content="noindex" />
+: }
+
 : around content -> {
 <h1>複合グラフ追加</h1>
 

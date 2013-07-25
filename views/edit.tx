@@ -1,5 +1,9 @@
 : cascade base
 
+: around additonal_meta -> {
+<meta name="robots" content="noindex" />
+: }
+
 : around content -> {
 <h1>Metrics設定変更</h1>
 

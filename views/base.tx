@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+: block additonal_meta -> { }
 <link rel="shortcut icon" href="<: $c.req.uri_for('/favicon.ico',[v=>2]) :>" type="image/vnd.microsoft.icon" />
-<link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap.min.css') :>">
+<link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap.min.css') :>" />
 <title>HRForecast</title>
 <style type="text/css">
 body {
@@ -24,8 +25,8 @@ body {
   color: #999;
 }
 </style>
-<link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap-responsive.min.css') :>">
-<link rel="stylesheet" href="<: $c.req.uri_for('/css/site.css') :>">
+<link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap-responsive.min.css') :>" />
+<link rel="stylesheet" href="<: $c.req.uri_for('/css/site.css') :>" />
 </head>
 <body>
 
