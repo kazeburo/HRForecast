@@ -52,7 +52,7 @@ body {
 <span id="total-0"></span>
 </div>
 
-<script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.7.1.min.js') :>"></script>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.10.2.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/dygraph-combined.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/site.js') :>"></script>

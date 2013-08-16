@@ -30,7 +30,7 @@ body {
 </head>
 <body>
 
-<div class="navbar navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top">
 <div class="navbar-inner">
 <div class="container-fluid">
 <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -79,7 +79,7 @@ body {
 
 </div><!--/.fluid-container-->
 
-<script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.7.1.min.js') :>"></script>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.10.2.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/dygraph-combined.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/site.js') :>"></script>
