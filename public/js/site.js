@@ -102,11 +102,13 @@ function loadGraphs () {
       legend: gdiv.data('colors').length > limit ? 'onmouseover' : 'always',
       axes: {
           x: {
-              pixelsPerLabel: 28,
+              pixelsPerLabel: 28
+          },
+          y: {
+              valueFormatter: addFigureVal
           }
       },
       axisLabelFontSize: 12,
-      yValueFormatter: addFigureVal,
       highlightCallback: function(e, x, pts, row){
           var total = 0;
           $.each(pts,function(idx,val){
