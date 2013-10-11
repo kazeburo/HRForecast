@@ -2,7 +2,9 @@
 
 <div class="row-fluid">
 <div class="span8">
-<h2><a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h2>
+<h2><a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,
+    $valid.valid('t')!='c' ? [t=>$valid.valid('t')] : [t=>$valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to')]
+) :>"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h2>
 </div>
 <div class="span4">
 <div class="btn-toolbar pull-right">
