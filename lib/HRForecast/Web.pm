@@ -581,7 +581,7 @@ my $complex_csv =  sub {
     foreach my $key ( sort keys %date_group ) {
         $key =~ m!^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$!;
         my $datetime = sprintf "%s/%s/%s %s:%s:%s", $1, $2, $3, $4, $5, $6;
-        my $csv_data = join ",", map { exists $date_group{$key}->{$_} ? $date_group{$key}->{$_} : '' } @id;
+        my $csv_data = join ",", map { exists $date_group{$key}->{$_} ? $date_group{$key}->{$_} : '0' } @id;
         $csv .= "$datetime,$csv_data\n";
     }
 
