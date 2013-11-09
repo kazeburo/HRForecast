@@ -54,16 +54,26 @@ body {
 <div class="container-fluid">
 <div class="row-fluid">
 <div class="span3">
-<div class="well sidebar-nav">
-<ul class="nav nav-list">
+
+<div class="accordion">
 : for $c.stash.services ->  $service {
-<li class="nav-header"><: $service.name :></li>
+<div class="accordion-group">
+<div class="accordion-heading">
+<a class="accordion-toggle" data-toggle="collapse" href="#sidebar_collapse_<: $service.name :>"><: $service.name :></a>
+</div><!--/.accordion-heading-->
+<div id="sidebar_collapse_<: $service.name :>" class="accordion-body collapse <: $service.collapse ? '' : 'in' :>">
+<div class="accordion-inner">
+<ul class="nav nav-list">
   : for $service.sections -> $section {
 <li class="<: $section.active ? "active" : "" :>"><a href="<: $c.req.uri_for('/list/'~$service.name~'/'~$section.name) :>"><i class="icon-signal"></i><: $section.name :></a></li>
   : }
-: }
 </ul>
-</div><!--/.well -->
+</div><!--/.accordion-inner-->
+</div><!--/.accordion-body-->
+</div><!--/.accordion-group-->
+: }
+</div><!--/.accordion-->
+
 </div><!--/span-->
 
 <div class="span9">
@@ -77,6 +87,7 @@ body {
 </div><!--/.fluid-container-->
 
 <script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.10.2.min.js') :>"></script>
+<script type="text/javascript" src="<: $c.req.uri_for('/js/jquery.cookie.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/dygraph-combined.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/site.js') :>"></script>
@@ -91,6 +102,12 @@ $(function(){
     $('#'+$(this).data('tgl')).toggle();
     $('#'+$(this).data('tgl')).find('input').first().focus();
     return false;
+  });
+  $('.accordion-body').on('shown', function(e) {
+    $.removeCookie($(e.target).attr('id'));
+  });
+  $('.accordion-body').on('hidden', function(e) {
+    $.cookie($(e.target).attr('id'), "hidden");
   });
 });
 </script>
