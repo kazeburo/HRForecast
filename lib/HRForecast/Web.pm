@@ -75,6 +75,7 @@ filter 'sidebar' => sub {
             }
             push @services , {
                 name => $service,
+                collapse => $c->req->cookies->{'sidebar_collapse_' . $service},
                 sections => \@sections,
             };
         }
