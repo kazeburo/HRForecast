@@ -104,7 +104,7 @@ $(function(){
     return false;
   });
   $('.accordion-body').on('shown', function(e) {
-    $.removeCookie($(e.target).attr('id'));
+    $.removeCookie($(e.target).attr('id'), { path: '/' });
   });
   $('.accordion-body').on('hidden', function(e) {
     $.cookie($(e.target).attr('id'), "hidden", { path: '/' });
