@@ -73,9 +73,11 @@ filter 'sidebar' => sub {
                     name => $section
                 };
             }
+            my $dot_escaped = $service;
+            $dot_escaped =~ s/\./__2E__/g;
             push @services , {
                 name => $service,
-                collapse => $c->req->cookies->{'sidebar_collapse_' . $service},
+                collapse => $c->req->cookies->{'sidebar_collapse_' . $dot_escaped},
                 sections => \@sections,
             };
         }

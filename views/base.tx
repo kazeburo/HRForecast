@@ -59,9 +59,9 @@ body {
 : for $c.stash.services ->  $service {
 <div class="accordion-group">
 <div class="accordion-heading">
-<a class="accordion-toggle" data-toggle="collapse" href="#sidebar_collapse_<: $service.name :>"><: $service.name :></a>
+<a class="accordion-toggle" data-toggle="collapse" href="#sidebar_collapse_<: $service.name.replace('\.','__2E__') :>"><: $service.name :></a>
 </div><!--/.accordion-heading-->
-<div id="sidebar_collapse_<: $service.name :>" class="accordion-body collapse <: $service.collapse ? '' : 'in' :>">
+<div id="sidebar_collapse_<: $service.name.replace('\.','__2E__') :>" class="accordion-body collapse <: $service.collapse ? '' : 'in' :>">
 <div class="accordion-inner">
 <ul class="nav nav-list">
   : for $service.sections -> $section {
