@@ -111,6 +111,15 @@ filter 'get_complex' => sub {
     }
 };
 
+filter 'unset_frame_option' => sub {
+    my $app = shift;
+    sub {
+        my ($self, $c) = @_;
+        $c->res->headers->remove_header('X-Frame-Options');
+        $app->($self,$c);
+    }
+};
+
 get '/' => [qw/sidebar/] => sub {
     my ( $self, $c )  = @_;
     $c->render('index.tx', {});
@@ -219,7 +228,7 @@ get '/view_complex/:service_name/:section_name/:graph_name' => [qw/sidebar get_c
     });
 };
 
-get '/ifr/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
+get '/ifr/:service_name/:section_name/:graph_name' => [qw/unset_frame_option get_metrics/] => sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
@@ -231,7 +240,7 @@ get '/ifr/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
     });
 };
 
-get '/ifr_complex/:service_name/:section_name/:graph_name' => [qw/get_complex/] => sub {
+get '/ifr_complex/:service_name/:section_name/:graph_name' => [qw/unset_frame_option get_complex/] => sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
@@ -243,12 +252,12 @@ get '/ifr_complex/:service_name/:section_name/:graph_name' => [qw/get_complex/] 
     });
 };
 
-get '/ifr/preview/' => sub {
+get '/ifr/preview/' => [qw/unset_frame_option/] => sub {
     my ( $self, $c )  = @_;
     $c->render('pifr_dummy.tx');
 };
 
-get '/ifr/preview/:complex' => sub {
+get '/ifr/preview/:complex' => [qw/unset_frame_option/] => sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
