@@ -127,6 +127,14 @@ get '/' => [qw/sidebar/] => sub {
     $c->render('index.tx', {});
 };
 
+get '/json' => [qw/sidebar/] => sub {
+    my ( $self, $c )  = @_;
+    $c->render_json({
+        error => 0,
+        services => $c->stash->{services},
+    });
+};
+
 get '/docs' => [qw/sidebar/] => sub {
     my ( $self, $c )  = @_;
     $c->render('docs.tx',{});
@@ -200,11 +208,25 @@ get '/list/:service_name/:section_name' => [qw/sidebar/] => sub {
     );
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
     $c->render('list.tx',{ 
-        metricses => $rows, valid => $result, metrics_params => _build_metrics_params($result),
+        metricses => $rows,
+        valid => $result,
+        metrics_params => _build_metrics_params($result),
         date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
                                     $to->strftime('%Y/%m/%d %T')]),
     });
 };
+
+get '/json/:service_name/:section_name' => sub {
+    my ( $self, $c )  = @_;
+    my $rows = $self->data->get_metricses(
+        $c->args->{service_name}, $c->args->{section_name}
+    );
+    $c->render_json({
+        error => 0,
+        metricses => $rows
+    });
+};
+
 
 get '/view/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/] => sub {
     my ( $self, $c )  = @_;
@@ -212,11 +234,21 @@ get '/view/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/]
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
     $c->render('list.tx', {
         metricses => [$c->stash->{metrics}],
-        valid => $result, metrics_params => _build_metrics_params($result),
+        valid => $result,
+        metrics_params => _build_metrics_params($result),
         date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
                                     $to->strftime('%Y/%m/%d %T')]),        
     });
 };
+
+get '/json/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
+    my ( $self, $c )  = @_;
+    $c->render_json({
+        error => 0,
+        metricses => [$c->stash->{metrics}],
+    });
+};
+
 
 get '/view_complex/:service_name/:section_name/:graph_name' => [qw/sidebar get_complex/] => sub {
     my ( $self, $c )  = @_;
@@ -224,9 +256,18 @@ get '/view_complex/:service_name/:section_name/:graph_name' => [qw/sidebar get_c
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
     $c->render('list.tx', {
         metricses => [$c->stash->{metrics}],
-        valid => $result, metrics_params => _build_metrics_params($result),
+        valid => $result,
+        metrics_params => _build_metrics_params($result),
         date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
                                     $to->strftime('%Y/%m/%d %T')]),        
+    });
+};
+
+get '/json_complex/:service_name/:section_name/:graph_name' => [qw/get_complex/] => sub {
+    my ( $self, $c )  = @_;
+    $c->render_json({
+        error => 0,
+        metricses => [$c->stash->{metrics}],
     });
 };
 
@@ -236,7 +277,8 @@ get '/ifr/:service_name/:section_name/:graph_name' => [qw/unset_frame_option get
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
     $c->render('ifr.tx', {
         metrics => $c->stash->{metrics},
-        valid => $result, metrics_params => _build_metrics_params($result),
+        valid => $result,
+        metrics_params => _build_metrics_params($result),
         date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
                                     $to->strftime('%Y/%m/%d %T')]),        
     });
@@ -273,7 +315,8 @@ get '/ifr/preview/:complex' => [qw/unset_frame_option/] => sub {
 
     $c->render('pifr.tx', {
         complex => $c->args->{complex},
-        valid => $result, metrics_params => _build_metrics_params($result),
+        valid => $result,
+        metrics_params => _build_metrics_params($result),
         colors => encode_json(\@colors),
         date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
                                     $to->strftime('%Y/%m/%d %T')]),        
@@ -347,8 +390,13 @@ post '/edit/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub
         $result->valid->as_hashref
     );
 
+    my $row = $self->data->get(
+        $c->args->{service_name}, $c->args->{section_name}, $c->args->{graph_name},
+    );
+
     $c->render_json({
         error => 0,
+        metricses => [$row],
         location => $c->req->uri_for(
             '/list/'.$result->valid('service_name').'/'.$result->valid('section_name'))->as_string,
     });
@@ -446,8 +494,14 @@ post '/add_complex' => sub {
         $result->valid('service_name'),$result->valid('section_name'),$result->valid('graph_name'),
         $result->valid->mixed
     );
+
+    my $row = $self->data->get_complex(
+        $c->args->{service_name}, $c->args->{section_name}, $c->args->{graph_name},
+    );
+
     $c->render_json({
         error => 0,
+        metricses => [$row],
         location => $c->req->uri_for('/list/'.$result->valid('service_name').'/'.$result->valid('section_name'))->as_string,
     });
 };
@@ -513,8 +567,14 @@ post '/edit_complex/:service_name/:section_name/:graph_name' => [qw/sidebar get_
         $c->stash->{metrics}->{id},
         $result->valid->mixed
     );
+
+    my $row = $self->data->get_complex(
+        $c->args->{service_name}, $c->args->{section_name}, $c->args->{graph_name},
+    );
+
     $c->render_json({
         error => 0,
+        metricses => [$row],
         location => $c->req->uri_for('/list/'.$result->valid('service_name').'/'.$result->valid('section_name'))->as_string,
     });
 };
@@ -642,7 +702,14 @@ post '/api/:service_name/:section_name/:graph_name' => sub {
         $c->args->{service_name}, $c->args->{section_name}, $c->args->{graph_name},
         $result->valid('number'), HTTP::Date::str2time($result->valid('datetime'))
     );
-    $c->render_json({ error => 0 });
+    my $row = $self->data->get(
+        $c->args->{service_name}, $c->args->{section_name}, $c->args->{graph_name},
+    );
+
+    $c->render_json({
+        error => 0,
+        metricses => [$row],
+    });
 };
 
 
