@@ -24,67 +24,70 @@ body {
 .table-order-pointer:hover, .table-order-remove:hover {
   color: #999;
 }
+.metrics-title {
+  margin: 2px 0px 20px;
+}
+.display-none {
+  display: none;
+}
 </style>
-<link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap-responsive.min.css') :>" />
 <link rel="stylesheet" href="<: $c.req.uri_for('/css/site.css') :>" />
 </head>
 <body>
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-<div class="navbar-inner">
-<div class="container-fluid">
-<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-<span class="icon-bar"></span>
-<span class="icon-bar"></span>
-<span class="icon-bar"></span>
-</a>
-<a class="brand" href="<: $c.req.uri_for('/') :>">HRForecast</a>
-<div class="nav-collapse">
-<ul class="nav">
-<li><a href="<: $c.req.uri_for('/') :>">ホーム</a></li>
-<li><a href="<: $c.req.uri_for('/add_complex') :>">複合グラフ追加</a></li>
-<li><a href="<: $c.req.uri_for('/docs') :>">ドキュメント</a></li>
-</ul>
-</div><!--/.nav-collapse -->
-</div>
-</div>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="<: $c.req.uri_for('/') :>">HRForecast</a>
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="<: $c.req.uri_for('/') :>">ホーム</a></li>
+        <li><a href="<: $c.req.uri_for('/add_complex') :>">複合グラフ追加</a></li>
+        <li><a href="<: $c.req.uri_for('/docs') :>">ドキュメント</a></li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 
-<div class="container-fluid">
-<div class="row-fluid">
-<div class="span3">
+<div class="container">
+<div class="row">
+<div class="col-md-3">
 
-<div class="accordion">
+<div class="panel-group" id="accordion">
 : for $c.stash.services ->  $service {
-<div class="accordion-group">
-<div class="accordion-heading">
-<a class="accordion-toggle" data-toggle="collapse" href="#sidebar_collapse_<: $service.name.replace('\.','__2E__') :>"><: $service.name :></a>
-</div><!--/.accordion-heading-->
-<div id="sidebar_collapse_<: $service.name.replace('\.','__2E__') :>" class="accordion-body collapse <: $service.collapse ? '' : 'in' :>">
-<div class="accordion-inner">
-<ul class="nav nav-list">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a data-toggle="collapse" href="#sidebar_collapse_<: $service.name.replace('\.','__2E__') :>"><: $service.name :></a>
+    </h4>
+  </div>
+  <ul class="list-group panel-collapse collapse <: $service.collapse ? '' : 'in' :>" id="sidebar_collapse_<: $service.name.replace('\.','__2E__') :>">
   : for $service.sections -> $section {
-<li class="<: $section.active ? "active" : "" :>"><a href="<: $c.req.uri_for('/list/'~$service.name~'/'~$section.name) :>"><i class="icon-signal"></i><: $section.name :></a></li>
-  : }
-</ul>
-</div><!--/.accordion-inner-->
-</div><!--/.accordion-body-->
-</div><!--/.accordion-group-->
+    <li class="list-group-item <: $section.active ? "active" : "" :>"><a href="<: $c.req.uri_for('/list/'~$service.name~'/'~$section.name) :>"><span class="glyphicon glyphicon-signal"></span> <: $section.name :></a></li>
+    : }
+  </ul>
+</div>
 : }
-</div><!--/.accordion-->
+</div>
 
-</div><!--/span-->
+</div><!--/col-->
 
-<div class="span9">
+<div class="col-md-9">
 : block content -> { }
-</div><!--/span-->
+</div><!--/col-->
 </div><!--/row-->
 
 <hr>
 
-
-</div><!--/.fluid-container-->
+</div><!--/container-->
 
 <script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.10.2.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/jquery.cookie.js') :>"></script>
@@ -101,7 +104,7 @@ $(function(){
   $('.iframe-src').click(function(){
     $('#'+$(this).data('tgl')).toggle();
     $('#'+$(this).data('tgl')).find('input').first().focus();
-    return false;
+    event.preventDefault();
   });
   $('.accordion-body').on('shown', function(e) {
     $.removeCookie($(e.target).attr('id'), { path: '/' });

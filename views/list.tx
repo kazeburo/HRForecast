@@ -8,8 +8,7 @@
 </h1>
 
 : my $path_info = $c.req.path_info;
-<div class="pagination pagination-right">
-<ul>
+<ul class="pagination pagination-sm pull-right" style="margin: 10px 0px;">
 : if $path_info.match('^/view/') {
 <li class="<: ($valid.valid('t') == 'w') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'w']) :>">1週間</a></li>
 <li class="<: ($valid.valid('t') == 'm') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'m']) :>">1ヶ月</a></li>
@@ -26,8 +25,7 @@
 <li class="<: ($valid.valid('t') == 'y') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/list/'~$c.args.service_name~'/'~$c.args.section_name, [t=>'y']) :>">1年</a></li>
 : }
 </ul>
-</div>
-
+<div class="clearfix"></div>
 
 : for $metricses ->  $metrics {
 : my $index = $~metrics.index;

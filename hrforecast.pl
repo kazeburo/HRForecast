@@ -58,7 +58,7 @@ $app = builder {
         };
     }
     enable 'Static',
-        path => qr!^/(?:(?:css|js|img)/|favicon\.ico$)!,
+        path => qr!^/(?:(?:css|js|img|fonts)/|favicon\.ico$)!,
             root => $root_dir . '/public';
     enable 'Scope::Container';
     $app;
