@@ -106,11 +106,11 @@ $(function(){
     $('#'+$(this).data('tgl')).find('input').first().focus();
     event.preventDefault();
   });
-  $('.accordion-body').on('shown', function(e) {
-    $.removeCookie($(e.target).attr('id'), { path: '/' });
+  $('.panel-collapse').on('shown.bs.collapse', function(e) {
+    $.removeCookie($(e.target).attr('id'), { expires: 365, path: '/' });
   });
-  $('.accordion-body').on('hidden', function(e) {
-    $.cookie($(e.target).attr('id'), "hidden", { path: '/' });
+  $('.panel-collapse').on('hidden.bs.collapse', function(e) {
+    $.cookie($(e.target).attr('id'), "hidden", { expires: 365, path: '/' });
   });
 });
 </script>
