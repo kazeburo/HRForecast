@@ -616,6 +616,24 @@ get '/csv/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
     $c->res;
 };
 
+get '/table/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
+    my ( $self, $c )  = @_;
+    my $result = $c->req->validator($metrics_validator);
+    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
+    my ($rows,$opt) = $self->data->get_data(
+        $c->stash->{metrics}->{id},
+        $from, $to
+    );
+    my @table = (['Date',
+                  sprintf("/%s/%s/%s",$c->stash->{metrics}->{service_name},$c->stash->{metrics}->{section_name},$c->stash->{metrics}->{graph_name})
+              ]);
+    foreach my $row ( @$rows ) {
+        push @table, [$row->{datetime}->strftime('%Y/%m/%d %T'), $row->{number}];
+    }
+    $c->render('table.tx', {table=>\@table});
+};
+
+
 my $complex_csv =  sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
@@ -669,8 +687,54 @@ my $complex_csv =  sub {
     $c->res;    
 };
 
+my $complex_table =  sub {
+    my ( $self, $c )  = @_;
+    my $result = $c->req->validator($metrics_validator);
+    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
+
+    my @data;
+    my @id;
+    if ( !$c->stash->{metrics} ) {
+        my @complex = split /:/, $c->args->{complex};
+        for my $id ( @complex ) {
+            my $data = $self->data->get_by_id($id);
+            next unless $data;
+            push @data, $data;
+            push @id, $data->{id};
+        }
+    }
+    else {
+        @data = @{$c->stash->{metrics}->{metricses}};
+        @id = map { $_->{id} } @data;
+    }
+
+    my ($rows,$opt) = $self->data->get_data(
+        [ map { $_->{id} } @data ],
+        $from, $to
+    );
+
+    my %date_group;
+    foreach my $row ( @$rows ) {
+        my $datetime = $row->{datetime}->strftime('%Y%m%d%H%M%S');
+        $date_group{$datetime} ||= {};
+        $date_group{$datetime}->{$row->{metrics_id}} = $row->{number};
+    }
+
+    my @table = (['Date', map { '/'.$_->{service_name}.'/'.$_->{section_name}.'/'.$_->{graph_name} } @data]);
+    foreach my $key ( sort keys %date_group ) {
+        $key =~ m!^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$!;
+        my $datetime = sprintf "%s/%s/%s %s:%s:%s", $1, $2, $3, $4, $5, $6;
+        push @table, [$datetime, map { exists $date_group{$key}->{$_} ? $date_group{$key}->{$_} : '' } @id];
+    }
+    $c->render('table.tx', { table => \@table });
+};
+
 get '/csv/:complex' => $complex_csv;
 get '/csv_complex/:service_name/:section_name/:graph_name' => [qw/get_complex/] => $complex_csv;
+
+get '/table/:complex' => $complex_table;
+get '/table_complex/:service_name/:section_name/:graph_name' => [qw/get_complex/] => $complex_table;
+
 
 post '/api/:service_name/:section_name/:graph_name' => sub {
     my ( $self, $c )  = @_;

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+<meta name="robots" content="noindex" />
+<link rel="shortcut icon" href="<: $c.req.uri_for('/favicon.ico',[v=>2]) :>" type="image/vnd.microsoft.icon" />
+<link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap.min.css') :>" />
+<style type="text/css">
+body {
+     margin: 0px;
+     padding: 0px;
+}
+</style>
+<link rel="stylesheet" href="<: $c.req.uri_for('/css/site.css') :>">
+<title>HRForecast</title>
+</head>
+<body>
+<div class="container">
+<table class="table table-striped table-bordered">
+: for $table -> $row {
+<tr>
+  : for $row -> $col {
+    <td><: $col :></td>
+  : }
+</tr>
+: }
+</table>
+</div>
+</body>
+</html>
+
