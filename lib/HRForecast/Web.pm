@@ -122,6 +122,15 @@ filter 'unset_frame_option' => sub {
     }
 };
 
+filter 'display_table' => sub {
+    my $app = shift;
+    sub {
+        my ($self, $c) = @_;
+        $c->stash->{display_table} = 1;
+        $app->($self,$c);
+    }
+};
+
 get '/' => [qw/sidebar/] => sub {
     my ( $self, $c )  = @_;
     $c->render('index.tx', {});
@@ -592,7 +601,7 @@ post '/delete_complex/:service_name/:section_name/:graph_name' => [qw/get_comple
     });
 };
 
-get '/csv/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
+my $display_csv = sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
@@ -600,10 +609,23 @@ get '/csv/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
         $c->stash->{metrics}->{id},
         $from, $to
     );
-    my $csv = sprintf("Date,/%s/%s/%s\n",$c->stash->{metrics}->{service_name},$c->stash->{metrics}->{section_name},$c->stash->{metrics}->{graph_name});
+
+    my @result;
+    push @result, [
+        'Date',
+        sprintf("/%s/%s/%s",map { $c->stash->{metrics}->{$_} } qw/service_name section_name graph_name/)
+    ];
     foreach my $row ( @$rows ) {
-        $csv .= sprintf "%s,%d\n", $row->{datetime}->strftime('%Y/%m/%d %T'), $row->{number}
+        push @result, [
+            $row->{datetime}->strftime('%Y/%m/%d %T'),
+            $row->{number}
+        ];
     }
+
+    if ( $c->stash->{display_table} ) {
+        return $c->render('table.tx', { table => \@result }); 
+    }
+
     if ( $result->valid('d') ) {
         $c->res->header('Content-Disposition',
                         sprintf('attachment; filename="metrics_%s.csv"',$c->stash->{metrics}->{id}));
@@ -612,29 +634,12 @@ get '/csv/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
     else {
         $c->res->content_type('text/plain');
     }
-    $c->res->body($csv);
+
+    $c->res->body( join "\n", map { join ",", @$_ } @result );
     $c->res;
 };
 
-get '/table/:service_name/:section_name/:graph_name' => [qw/get_metrics/] => sub {
-    my ( $self, $c )  = @_;
-    my $result = $c->req->validator($metrics_validator);
-    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
-    my ($rows,$opt) = $self->data->get_data(
-        $c->stash->{metrics}->{id},
-        $from, $to
-    );
-    my @table = (['Date',
-                  sprintf("/%s/%s/%s",$c->stash->{metrics}->{service_name},$c->stash->{metrics}->{section_name},$c->stash->{metrics}->{graph_name})
-              ]);
-    foreach my $row ( @$rows ) {
-        push @table, [$row->{datetime}->strftime('%Y/%m/%d %T'), $row->{number}];
-    }
-    $c->render('table.tx', {table=>\@table});
-};
-
-
-my $complex_csv =  sub {
+my $display_complex_csv =  sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
@@ -667,13 +672,26 @@ my $complex_csv =  sub {
         $date_group{$datetime}->{$row->{metrics_id}} = $row->{number};
     }
 
-    my $csv = sprintf("Date,%s\n", join ",", map { '/'.$_->{service_name}.'/'.$_->{section_name}.'/'.$_->{graph_name} } @data);
+    my @result;
+    push @result, [
+        'Date',
+        map { '/'.$_->{service_name}.'/'.$_->{section_name}.'/'.$_->{graph_name} } @data
+    ];
+    
     foreach my $key ( sort keys %date_group ) {
         $key =~ m!^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$!;
         my $datetime = sprintf "%s/%s/%s %s:%s:%s", $1, $2, $3, $4, $5, $6;
-        my $csv_data = join ",", map { exists $date_group{$key}->{$_} ? $date_group{$key}->{$_} : '' } @id;
-        $csv .= "$datetime,$csv_data\n";
+
+        push @result, [
+            $datetime,
+            map { exists $date_group{$key}->{$_} ? $date_group{$key}->{$_} : '' } @id
+        ];
     }
+
+    if ( $c->stash->{display_table} ) {
+        return $c->render('table.tx', { table => \@result }); 
+    }
+
 
     if ( $result->valid('d') ) {
         $c->res->header('Content-Disposition',
@@ -683,57 +701,26 @@ my $complex_csv =  sub {
     else {
         $c->res->content_type('text/plain');
     }
-    $c->res->body($csv);
+    $c->res->body( join "\n", map { join ",", @$_ } @result );
     $c->res;    
 };
 
-my $complex_table =  sub {
-    my ( $self, $c )  = @_;
-    my $result = $c->req->validator($metrics_validator);
-    my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
 
-    my @data;
-    my @id;
-    if ( !$c->stash->{metrics} ) {
-        my @complex = split /:/, $c->args->{complex};
-        for my $id ( @complex ) {
-            my $data = $self->data->get_by_id($id);
-            next unless $data;
-            push @data, $data;
-            push @id, $data->{id};
-        }
-    }
-    else {
-        @data = @{$c->stash->{metrics}->{metricses}};
-        @id = map { $_->{id} } @data;
-    }
+get '/csv/:service_name/:section_name/:graph_name'
+    => [qw/get_metrics/]
+    => $display_csv;
+get '/table/:service_name/:section_name/:graph_name'
+    => [qw/get_metrics display_table/]
+    => $display_csv;
 
-    my ($rows,$opt) = $self->data->get_data(
-        [ map { $_->{id} } @data ],
-        $from, $to
-    );
-
-    my %date_group;
-    foreach my $row ( @$rows ) {
-        my $datetime = $row->{datetime}->strftime('%Y%m%d%H%M%S');
-        $date_group{$datetime} ||= {};
-        $date_group{$datetime}->{$row->{metrics_id}} = $row->{number};
-    }
-
-    my @table = (['Date', map { '/'.$_->{service_name}.'/'.$_->{section_name}.'/'.$_->{graph_name} } @data]);
-    foreach my $key ( sort keys %date_group ) {
-        $key =~ m!^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$!;
-        my $datetime = sprintf "%s/%s/%s %s:%s:%s", $1, $2, $3, $4, $5, $6;
-        push @table, [$datetime, map { exists $date_group{$key}->{$_} ? $date_group{$key}->{$_} : '' } @id];
-    }
-    $c->render('table.tx', { table => \@table });
-};
-
-get '/csv/:complex' => $complex_csv;
-get '/csv_complex/:service_name/:section_name/:graph_name' => [qw/get_complex/] => $complex_csv;
-
-get '/table/:complex' => $complex_table;
-get '/table_complex/:service_name/:section_name/:graph_name' => [qw/get_complex/] => $complex_table;
+get '/csv/:complex' => $display_complex_csv;
+get '/csv_complex/:service_name/:section_name/:graph_name'
+    => [qw/get_complex/]
+    => $display_complex_csv;
+get '/table/:complex' => [qw/display_table/] => $display_complex_csv;
+get '/table_complex/:service_name/:section_name/:graph_name' 
+    => [qw/get_complex display_table/] 
+    => $display_complex_csv;
 
 
 post '/api/:service_name/:section_name/:graph_name' => sub {

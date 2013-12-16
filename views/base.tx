@@ -59,7 +59,7 @@ body {
 
 <div class="container">
 <div class="row">
-<div class="col-md-3">
+<div class="col-md-2">
 
 <div class="panel-group" id="accordion">
 : for $c.stash.services ->  $service {
@@ -80,7 +80,7 @@ body {
 
 </div><!--/col-->
 
-<div class="col-md-9">
+<div class="col-md-10">
 : block content -> { }
 </div><!--/col-->
 </div><!--/row-->
