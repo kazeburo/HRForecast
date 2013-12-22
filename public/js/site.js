@@ -165,9 +165,13 @@ function setHxrConfirmBtn() {
   var mybtn = this;
   var modal = $('<div class="modal fade">'+
 '<form method="post" action="#">'+
+'<div class="modal-dialog">'+
+'<div class="modal-content">'+
 '<div class="modal-header"><h3>confirm</h3></div>'+
 '<div class="modal-body"><div class="alert alert-error hide">System Error!</div><p>confirm</p></div>'+
 '<div class="modal-footer"><input type="submit" class="btn btn-danger" value="confirm" /></div>'+
+'</div>'+
+'</div>'+
 '</form></div>');
   modal.find('h3').text($(mybtn).text());
   modal.find('input[type=submit]').attr('value',$(mybtn).text());
