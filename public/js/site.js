@@ -129,8 +129,8 @@ function setHxrpost() {
   $(myform).first().prepend('<div class="alert alert-error hide">System Error!</div>');
   $(myform).submit(function(){
     $(myform).find('.alert-error').hide();
-    $(myform).find('.validator_message').detach();
-    $(myform).find('.control-group').removeClass('error');
+    $(myform).find('.validator_message').addClass('hide');
+    $(myform).find('div.form-group').removeClass('has-error');
     $.ajax({
       type: 'POST',
       url: myform.action,
@@ -142,14 +142,13 @@ function setHxrpost() {
         }
         else {
             $.each(data.messages, function (param,message) {
-              var helpblock = $('<p class="validator_message help-block"></p>');
-              helpblock.text(message);
-              $(myform).find('[name="'+param+'"]').parents('div.controls').first().append(helpblock);
-              $(myform).find('[name="'+param+'"]').parents('div.control-group').first().addClass('error');
+              var name = param;
               if ( param == 'path-data' ) {
-                $(myform).find('[name="path-add"]').parents('div.controls').first().append(helpblock);
-                $(myform).find('[name="path-add"]').parents('div.control-group').first().addClass('error');
-              }
+                  name = 'path-add';
+                }
+              var parent = $(myform).find('[name="'+param+'"]').parents('div.form-group').first();
+              parent.find('.validator_message').text(message).removeClass('hide');
+              parent.addClass('has-error');
             });
         }
       },
