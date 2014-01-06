@@ -25,6 +25,7 @@
       <input class="form-control" type="text" name="graph_name" />
     </div>    
     <p class="help-block">グラフを表示するURI(サービス名/セクション名/グラフ名)</p>
+    <p class="validator_message help-block hide"></p>
   </div>
 </div>
 
@@ -32,6 +33,7 @@
   <label class="col-sm-2 control-label">概要</label>
   <div class="col-sm-10">
     <input class="form-control" type="text" name="description" />
+    <p class="validator_message help-block hide"></p>
   </div>
 </div>
 
@@ -61,6 +63,7 @@
       <option value="0">0</option>
     </select>
     <p class="help-block">数値が大きい方が先頭</p>
+    <p class="validator_message help-block hide"></p>
   </div>
 </div>
 
@@ -70,6 +73,7 @@
   <div class="col-sm-4">
     <input class="form-control" type="text" name="color" />
     <p class="help-block">#000000-#FFFFFFの範囲</p>
+    <p class="validator_message help-block hide"></p>
   </div>
 </div>
 
