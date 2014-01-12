@@ -112,6 +112,7 @@ $(function(){
   $('.panel-collapse').on('hidden.bs.collapse', function(e) {
     $.cookie($(e.target).attr('id'), "hidden", { expires: 365, path: '/' });
   });
+  $(document).on('click', 'span[id^=label] span', jumpToSelectGraph);
 });
 </script>
 </body>
