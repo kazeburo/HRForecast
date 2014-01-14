@@ -272,3 +272,10 @@ function setTablePreview() {
       }
     );
 };
+
+function jumpToSelectGraph(e) {
+    var url = '/view' + $(e.target).text().replace(/^\s+/, "");
+    var params = location.href.split("?")[1];
+    if (params) { url += '?' + params}
+    location.href = url;
+};
