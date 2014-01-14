@@ -1,5 +1,0 @@
-.dygraph-closest-legend > span { display: none; }
-.dygraph-closest-legend > span.highlight { display: inline; }
-.dygraph-highlighted-legend > span.highlight { text-decoration: underline; }
-span[id^="label"] span { cursor: pointer; }
-

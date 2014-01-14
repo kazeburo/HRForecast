@@ -76,7 +76,8 @@ function loadGraphs () {
   } else if ( gdiv.data('colors').length > 1 ) {
       $('#'+'label-'+gdiv.data('index')).addClass('dygraph-highlighted-legend');
   }
-  g = new Dygraph(
+  $('#onmouse-'+gdiv.data('index')).hide();
+  var g = new Dygraph(
     gdiv.context,
     gdiv.data('csv'),
     {
@@ -97,7 +98,7 @@ function loadGraphs () {
           highlightCircleSize: gdiv.data('colors').length > 1 ? 5 : 3,
       },
       labelsKMB: true,
-      labelsDiv: 'label-'+gdiv.data('index'),
+      labelsDiv: 'onmouse-'+gdiv.data('index'),
       labelsSeparateLines: gdiv.data('colors').length > limit ? false : true,
       legend: gdiv.data('colors').length > limit ? 'onmouseover' : 'always',
       axes: {
@@ -111,6 +112,8 @@ function loadGraphs () {
       axisLabelFontSize: 12,
       highlightCallback: function(e, x, pts, row){
           var total = 0;
+          $('#onmouse-'+gdiv.data('index')).show();
+          $('#label-'+gdiv.data('index')).hide();
           $.each(pts,function(idx,val){
               total += val.yval;
           });
@@ -119,6 +122,8 @@ function loadGraphs () {
           }
       },
       unhighlightCallback: function(e) {
+          $('#onmouse-'+gdiv.data('index')).hide();
+          $('#label-'+gdiv.data('index')).show();
           $('#total-'+gdiv.data('index')).html('');
       }
     }
@@ -273,9 +278,3 @@ function setTablePreview() {
     );
 };
 
-function jumpToSelectGraph(e) {
-    var url = '/view' + $(e.target).text().replace(/^\s+/, "");
-    var params = location.href.split("?")[1];
-    if (params) { url += '?' + params}
-    location.href = url;
-};
