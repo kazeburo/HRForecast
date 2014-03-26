@@ -30,6 +30,9 @@ body {
 .display-none {
   display: none;
 }
+#accordion li a {
+  white-space: nowrap;
+}
 </style>
 </head>
 <body>
