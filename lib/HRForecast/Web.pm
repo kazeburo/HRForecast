@@ -317,12 +317,14 @@ get '/ifr/preview/:complex' => [qw/unset_frame_option/] => sub {
 
     my @complex = split /:/, $c->args->{complex};
     my @colors;
+    my @metricses;
     for my $id ( @complex ) {
         my $data = $self->data->get_by_id($id);
         push @colors, $data ? $data->{color} : '#cccccc';
     }
 
     $c->render('pifr.tx', {
+        metricses => [@metricses],
         complex => $c->args->{complex},
         valid => $result,
         metrics_params => _build_metrics_params($result),

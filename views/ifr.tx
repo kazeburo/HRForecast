@@ -54,7 +54,12 @@ body {
 <div id="graphdiv-0" data-index="0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,$metrics_params) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" style="position:absolute;top:45px;bottom:5px;left:5px;right:200px;"></div>
 
 <div style="position:absolute;width:198px;right:0px;top:45px;word-wrap:break-word;">
-<span id="label-0"></span>
+<span id="label-0">
+<a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,$metrics_params) :>" style="color:<: $metrics.color :>">
+<span style="font-weight:bold"><: '/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name :></span>
+</a>
+</span>
+<span id="onmouse-0" style="display:none;"></span>
 <span id="total-0"></span>
 </div>
 
