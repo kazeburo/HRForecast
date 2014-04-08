@@ -320,6 +320,7 @@ get '/ifr/preview/:complex' => [qw/unset_frame_option/] => sub {
     my @metricses;
     for my $id ( @complex ) {
         my $data = $self->data->get_by_id($id);
+        push @metricses, $data;
         push @colors, $data ? $data->{color} : '#cccccc';
     }
 
