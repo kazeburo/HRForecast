@@ -205,9 +205,12 @@ function setHxrConfirmBtn() {
 };
 
 function addNewRow() {
+    var metrics = $('select[name="path-add"]#select_metrics');
+    var option = metrics.find('option:selected');
+    var label = '/'+option.data('parent')+'/'+option.text().replace(/(^\s+)|(\s+$)/g, "");
     var tr = $('<tr></tr>');
     tr.append('<td><span class="table-order-pointer table-order-up">⬆</span><span class="table-order-pointer table-order-down">⬇</span></td>');
-    tr.append('<td style="text-align:left">'+$('select[name="path-add"] option:selected').html()+'<input type="hidden" name="path-data" value="'+$('select[name="path-add"]').val()+'" /></td>');
+    tr.append('<td style="text-align:left">'+label+'<input type="hidden" name="path-data" value="'+metrics.val()+'" /></td>');
     tr.append('<td style="text-align:center"><span class="table-order-remove">✖</span></td>');
     tr.appendTo($('table#data-tbl'));
 
@@ -277,4 +280,24 @@ function setTablePreview() {
       }
     );
 };
+
+$(function() {
+    $('select#select_service').change();
+});
+
+$(document).on('change', 'select#select_service', function() {
+    var name0 = $('select#select_service').val();
+    $('select#select_section option').remove();
+    var options = $('select#select_section_original option[data-parent="' + name0 + '"]').clone();
+    $('select#select_section').append(options);
+    $('select#select_section').change();
+});
+
+$(document).on('change', 'select#select_section', function() {
+    var name0 = $('select#select_service').val();
+    var name1 = $('select#select_section').val();
+    $('select#select_metrics option').remove();
+    var options = $('select#select_metrics_original option[data-parent="' + name0 + '/' + name1 + '"]').clone();
+    $('select#select_metrics').append(options);
+});
 
