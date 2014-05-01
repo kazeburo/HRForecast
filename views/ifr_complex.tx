@@ -15,56 +15,59 @@ body {
 </head>
 <body>
 
-<h3 style="margin: 0px;padding: 8px 20px 7px;border-bottom: solid 1px #999;"><a href="<: $c.req.uri_for('/view_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>" target="_blank"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h3>
+: if $valid.valid('graphheader') != 0 {
+    <h3 style="margin: 0px;padding: 8px 20px 7px;border-bottom: solid 1px #999;"><a href="<: $c.req.uri_for('/view_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t => $valid.valid('t')] ) :>" target="_blank"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h3>
 
 
-<div class="btn-toolbar" style="position:absolute;top:-1px;right:100px;padding-top:6px" role="toolbar">
+    <div class="btn-toolbar" style="position:absolute;top:-1px;right:100px;padding-top:6px" role="toolbar">
 
-<div class="btn-group">
-<a class="btn btn-default btn-sm <: ($valid.valid('t') == 'w') ? 'active' : '' :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t=>'w']) :>">1週間</a>
-<a class="btn btn-default btn-sm <: ($valid.valid('t') == 'm') ? 'active' : '' :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t=>'m']) :>">1ヶ月</a>
-<a class="btn btn-default btn-sm <: ($valid.valid('t') == 'y') ? 'active' : '' :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t=>'y']) :>">1年</a>
-</div>
+    <div class="btn-group">
+    <a class="btn btn-default btn-sm <: ($valid.valid('t') == 'w') ? 'active' : '' :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t=>'w']) :>">1週間</a>
+    <a class="btn btn-default btn-sm <: ($valid.valid('t') == 'm') ? 'active' : '' :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t=>'m']) :>">1ヶ月</a>
+    <a class="btn btn-default btn-sm <: ($valid.valid('t') == 'y') ? 'active' : '' :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name, [t=>'y']) :>">1年</a>
+    </div>
 
-<div class="btn-group">
-<a class="btn btn-default btn-sm" href="<: $c.req.uri_for('/csv/'~$metrics.uri,[
-    t=>$valid.valid('t'),
-    from=>$valid.valid('from'),
-    to=>$valid.valid('to'),
-    period=>$valid.valid('period'),
-    offset=>$valid.valid('offset'),
-    d=>1,
-]) :>">EXPORT</a>
-<a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
-<ul class="dropdown-menu">
-<li class="dropdown-header">CSV</li>
-<li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'w',d=>1]) :>">1週間</a></li>
-<li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'m',d=>1]) :>">1ヶ月</a></li>
-<li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'y',d=>1]) :>">1年</a></li>
-<li class="divider"></li>
-<li class="dropdown-header">HTML</li>
-<li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,[t=>'w',d=>1]) :>" target="_blank">1週間</a></li>
-<li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,[t=>'m',d=>1]) :>" target="_blank">1ヶ月</a></li>
-<li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,[t=>'y',d=>1]) :>" target="_blank">1年</a></li>
-</ul>
-</div><!-- /btn-group -->
+    <div class="btn-group">
+    <a class="btn btn-default btn-sm" href="<: $c.req.uri_for('/csv/'~$metrics.uri,[
+        t=>$valid.valid('t'),
+        from=>$valid.valid('from'),
+        to=>$valid.valid('to'),
+        period=>$valid.valid('period'),
+        offset=>$valid.valid('offset'),
+        d=>1,
+    ]) :>">EXPORT</a>
+    <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+    <ul class="dropdown-menu">
+    <li class="dropdown-header">CSV</li>
+    <li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'w',d=>1]) :>">1週間</a></li>
+    <li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'m',d=>1]) :>">1ヶ月</a></li>
+    <li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'y',d=>1]) :>">1年</a></li>
+    <li class="divider"></li>
+    <li class="dropdown-header">HTML</li>
+    <li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,[t=>'w',d=>1]) :>" target="_blank">1週間</a></li>
+    <li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,[t=>'m',d=>1]) :>" target="_blank">1ヶ月</a></li>
+    <li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,[t=>'y',d=>1]) :>" target="_blank">1年</a></li>
+    </ul>
+    </div><!-- /btn-group -->
 
-</div>
-
-<div id="graphdiv-0" data-index="0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.uri,$metrics_params) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" data-stack="<: $metrics.stack :>" style="position:absolute;top:45px;bottom:5px;left:5px;right:200px;"></div>
-
-<div style="position:absolute;width:198px;right:0px;top:45px;word-wrap:break-word;">
-<span id="label-0">
-: for $metrics.metricses ->  $i_metrics {
-  <a href="<: $c.req.uri_for('/view/'~$i_metrics.service_name~'/'~$i_metrics.section_name~'/'~$i_metrics.graph_name,$metrics_params) :>" style="color:<: $i_metrics.color :>">
-  <span style="font-weight:bold"><: '/'~$i_metrics.service_name~'/'~$i_metrics.section_name~'/'~$i_metrics.graph_name :></span>
-  </a><br />
+    </div>
 : }
-</span>
-<span id="onmouse-0" style="display:none;"></span>
-<span id="total-0"></span>
-</div>
 
+<div id="graphdiv-0" data-index="0" class="metrics-graph" data-csv="<: $c.req.uri_for('/csv/'~$metrics.uri,$metrics_params) :>" data-datewindow="<: $date_window :>" data-colors="<: $metrics.colors :>" data-stack="<: $metrics.stack :>" style="position:absolute;top:<: ($valid.valid('graphheader') == 0) ? '0px' : '45px' :>;bottom:5px;left:5px;right:<: ($valid.valid('graphlabel') == 0) ? '50px' : '200px' :>;"></div>
+
+: if $valid.valid('graphlabel') != 0 {
+    <div style="position:absolute;width:198px;right:0px;top:<: ($valid.valid('graphheader') == 0) ? '0px' : '45px' :>;word-wrap:break-word;">
+    <span id="label-0">
+    : for $metrics.metricses ->  $i_metrics {
+      <a href="<: $c.req.uri_for('/view/'~$i_metrics.service_name~'/'~$i_metrics.section_name~'/'~$i_metrics.graph_name,$metrics_params) :>" style="color:<: $i_metrics.color :>">
+      <span style="font-weight:bold"><: '/'~$i_metrics.service_name~'/'~$i_metrics.section_name~'/'~$i_metrics.graph_name :></span>
+      </a><br />
+    : }
+    </span>
+    <span id="onmouse-0" style="display:none;"></span>
+    <span id="total-0"></span>
+    </div>
+: }
 <script type="text/javascript" src="<: $c.req.uri_for('/js/jquery-1.10.2.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/bootstrap.min.js') :>"></script>
 <script type="text/javascript" src="<: $c.req.uri_for('/js/dygraph-combined.js') :>"></script>
