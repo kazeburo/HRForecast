@@ -7,8 +7,8 @@ PostX is a tool that can help you post data to HRForecast easily.
 
 ### Key features
 
-* add new grpah only with sql file
-* 
+* add new service/section/grpah only with sql file
+* execute the sql and post data to HRForecast automatically  
 
 ## Install & Setup
 
@@ -24,16 +24,16 @@ make
 
 ### Rule
 
-Project | HRForecast | Comments |
---- | --- | ---
-directory | service | ./sql/{directory} is the service of HRForecast
-filename  | section | filename is the section of service
-fetch columns | graphs | fetch columns are the graphs of section
+|Project       | HRForecast | Comments                                        |
+|--------------| ---------- | ----------------------------------------------- |
+|directory     | service    | ./sql/{directory} is the service of HRForecast  |
+|filename      | section    | filename is the section of service              |
+|fetch columns | graphs     | fetch columns are the graphs of section         |
 
 * example
 
 ```sh
-$tree
+$ tree
 sql
 └── shopping
     └── mau.sql
