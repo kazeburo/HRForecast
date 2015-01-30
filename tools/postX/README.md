@@ -39,11 +39,9 @@ sql
     └── mau.sql
 ```
 
-```sql
-datetime | mau_total | mau_new | mau_resurrection | mau_retention
-------------------------------------------
-2015-02-05 | 900 | 100 | 300 | 500
-```
+|datetime   | mau_total | mau_new | mau_resurrection | mau_retention |
+| --------- | --------- | ------- | ---------------- | ------------- |
+|2015-02-25 | 900       | 100     | 300              | 500           |
 
 ### Run
 
