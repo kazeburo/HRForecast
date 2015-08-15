@@ -4,7 +4,7 @@
 <h1>
 <span><a href="<: $c.req.uri_for('/') :>">Home</a> »
 <: $c.args.service_name :> »
-<: $c.args.section_name :></span>
+<a href="<: $c.req.uri_for('/list/'~$c.args.service_name~'/'~$c.args.section_name) :>"><: $c.args.section_name :></a></span>
 </h1>
 
 : my $path_info = $c.req.path_info;
