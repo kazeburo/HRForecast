@@ -48,7 +48,7 @@ vagrant@precise32:/vagrant$ carton exec -- perl report.pl --date=2014-10-04 --sq
 vagrant@precise32:/vagrant$ for dt in `ruby -rdate -e '(Date.parse("2014-09-29")..Date.parse("2014-10-19")).each{|i| puts i.strftime("%Y-%m-%d")}'`; do echo $dt; carton exec -- perl report.pl --sql=purchase_mau.sql --date=$dt; done
 ```
 
-## Demo
+## ルール
 sqlを指定のディレクトリにいれると実行すると下記のようになります。
 
 #### プロジェクトの規則とHRForcastの対応について
@@ -70,7 +70,7 @@ sql
 
 ```sql
 dt | wau_new | retention | resurrection | total | all
-------------------------------------------
+-----------------------------------------------------
 2014-10-13 | 1012 | 2023 | 3034 | 6069 | 1020304
 ```
 
