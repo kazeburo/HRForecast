@@ -68,11 +68,9 @@ sql
     └── purchase_mau.sql
 ```
 
-```sql
 dt | wau_new | retention | resurrection | total | all
 ---|---|---|---|---|---|---
 2014-10-13 | 1012 | 2023 | 3034 | 6069 | 1020304
-```
 
 ## Usage
 ```
