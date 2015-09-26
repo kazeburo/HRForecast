@@ -7,6 +7,7 @@ use Kossy;
 use HTTP::Date;
 use Time::Piece;
 use HRForecast::Data;
+use HRForecast::Calculator;
 use Log::Minimal;
 use JSON qw//;
 
@@ -146,7 +147,7 @@ get '/json' => [qw/sidebar/] => sub {
 
 get '/docs' => [qw/sidebar/] => sub {
     my ( $self, $c )  = @_;
-    $c->render('docs.tx',{});
+    $c->render('docs.tx',{calculations => HRForecast::Calculator::CALCULATIONS});
 };
 
 my $metrics_validator = [
@@ -204,6 +205,12 @@ my $metrics_validator = [
             [['CHOICE',qw/1 0/],'invalid graphlabel flag'],
         ],
     },
+    'calculation' => {
+        default => '',
+        rule => [
+            [['CHOICE', map { $_->{function} } @{HRForecast::Calculator::CALCULATIONS()} ],'invalid calculation'],
+        ],
+    },
 ];
 
 sub _build_metrics_params {
@@ -218,8 +225,33 @@ sub _build_metrics_params {
     elsif ($term eq 'c') {
         push @params, $_ => $result->valid($_) for qw/from to/;
     }
+
+    my $calculation = $result->valid('calculation');
+    if ($calculation && ($calculation ne '')) {
+        push @params, 'calculation', $calculation;
+    }
+
     \@params;
 }
+
+sub create_merge_params {
+    my $array_ref = shift;
+
+    return sub {
+        my $hash_ref = shift;
+        my %params_hash = (@$array_ref, %$hash_ref);
+
+        while (my ($key, $value) = each(%params_hash)){
+            if ($value eq '') {
+                delete $params_hash{$key};
+            }
+        }
+
+        my @params_array = %params_hash;
+
+        return \@params_array;
+    }
+};
 
 get '/list/:service_name/:section_name' => [qw/sidebar/] => sub {
     my ( $self, $c )  = @_;
@@ -228,12 +260,15 @@ get '/list/:service_name/:section_name' => [qw/sidebar/] => sub {
         $c->args->{service_name}, $c->args->{section_name}
     );
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
+    my $metrics_params = _build_metrics_params($result);
     $c->render('list.tx',{ 
         metricses => $rows,
         valid => $result,
-        metrics_params => _build_metrics_params($result),
-        date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
+        metrics_params => $metrics_params,
+        date_window => encode_json([$from->strftime('%Y/%m/%d %T'),
                                     $to->strftime('%Y/%m/%d %T')]),
+        calculations => HRForecast::Calculator::CALCULATIONS,
+        merge_params => HRForecast::Web::create_merge_params($metrics_params),
     });
 };
 
@@ -253,12 +288,15 @@ get '/view/:service_name/:section_name/:graph_name' => [qw/sidebar get_metrics/]
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
+    my $metrics_params = _build_metrics_params($result);
     $c->render('list.tx', {
         metricses => [$c->stash->{metrics}],
         valid => $result,
-        metrics_params => _build_metrics_params($result),
-        date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
-                                    $to->strftime('%Y/%m/%d %T')]),        
+        metrics_params => $metrics_params,
+        date_window => encode_json([$from->strftime('%Y/%m/%d %T'),
+                                    $to->strftime('%Y/%m/%d %T')]),
+        calculations => HRForecast::Calculator::CALCULATIONS,
+        merge_params => HRForecast::Web::create_merge_params($metrics_params),
     });
 };
 
@@ -275,12 +313,15 @@ get '/view_complex/:service_name/:section_name/:graph_name' => [qw/sidebar get_c
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
+    my $metrics_params = _build_metrics_params($result);
     $c->render('list.tx', {
         metricses => [$c->stash->{metrics}],
         valid => $result,
-        metrics_params => _build_metrics_params($result),
-        date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
-                                    $to->strftime('%Y/%m/%d %T')]),        
+        metrics_params => $metrics_params,
+        date_window => encode_json([$from->strftime('%Y/%m/%d %T'),
+                                    $to->strftime('%Y/%m/%d %T')]),
+        calculations => HRForecast::Calculator::CALCULATIONS,
+        merge_params => HRForecast::Web::create_merge_params($metrics_params),
     });
 };
 
@@ -296,12 +337,15 @@ get '/ifr/:service_name/:section_name/:graph_name' => [qw/unset_frame_option get
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
+    my $metrics_params = _build_metrics_params($result);
     $c->render('ifr.tx', {
         metrics => $c->stash->{metrics},
         valid => $result,
-        metrics_params => _build_metrics_params($result),
-        date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
-                                    $to->strftime('%Y/%m/%d %T')]),        
+        metrics_params => $metrics_params,
+        date_window => encode_json([$from->strftime('%Y/%m/%d %T'),
+                                    $to->strftime('%Y/%m/%d %T')]),
+        calculations => HRForecast::Calculator::CALCULATIONS,
+        merge_params => HRForecast::Web::create_merge_params($metrics_params),
     });
 };
 
@@ -309,11 +353,15 @@ get '/ifr_complex/:service_name/:section_name/:graph_name' => [qw/unset_frame_op
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
+    my $metrics_params = _build_metrics_params($result);
     $c->render('ifr_complex.tx', {
         metrics => $c->stash->{metrics},
-        valid => $result, metrics_params => _build_metrics_params($result),
-        date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
-                                    $to->strftime('%Y/%m/%d %T')]),        
+        valid => $result,
+        metrics_params => $metrics_params,
+        date_window => encode_json([$from->strftime('%Y/%m/%d %T'),
+                                    $to->strftime('%Y/%m/%d %T')]),
+        calculations => HRForecast::Calculator::CALCULATIONS,
+        merge_params => HRForecast::Web::create_merge_params($metrics_params),
     });
 };
 
@@ -342,8 +390,8 @@ get '/ifr/preview/:complex' => [qw/unset_frame_option/] => sub {
         valid => $result,
         metrics_params => _build_metrics_params($result),
         colors => encode_json(\@colors),
-        date_window => encode_json([$from->strftime('%Y/%m/%d %T'), 
-                                    $to->strftime('%Y/%m/%d %T')]),        
+        date_window => encode_json([$from->strftime('%Y/%m/%d %T'),
+                                    $to->strftime('%Y/%m/%d %T')]),
     });
 };
 
@@ -620,10 +668,9 @@ my $display_csv = sub {
     my ( $self, $c )  = @_;
     my $result = $c->req->validator($metrics_validator);
     my ($from ,$to) = $self->calc_term( map {($_ =>  $result->valid($_))} qw/t from to period offset/);
-    my ($rows,$opt) = $self->data->get_data(
-        $c->stash->{metrics}->{id},
-        $from, $to
-    );
+
+    my $calculator = HRForecast::Calculator->new();
+    my $rows = $calculator->calculate($self->data, $c->stash->{metrics}->{id}, $from ,$to, $result->valid('calculation'));
 
     my @result;
     push @result, [
@@ -675,10 +722,8 @@ my $display_complex_csv =  sub {
         @id = map { $_->{id} } @data;
     }
 
-    my ($rows,$opt) = $self->data->get_data(
-        [ map { $_->{id} } @data ],
-        $from, $to
-    );
+    my $calculator = HRForecast::Calculator->new();
+    my $rows = $calculator->calculate($self->data, [ map { $_->{id} } @data ], $from, $to, $result->valid('calculation'));
 
     my %date_group;
     foreach my $row ( @$rows ) {

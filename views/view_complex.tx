@@ -2,37 +2,28 @@
 
 <div class="row">
   <div class="col-md-7">
-    <h2 class="metrics-title"><a href="<: $c.req.uri_for('/view_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,
-      $valid.valid('t')!='c' ? [t=>$valid.valid('t')] : [t=>$valid.valid('t'),from=>$valid.valid('from'),to=>$valid.valid('to')]
-    ) :>"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h2>
+    <h2 class="metrics-title"><a href="<: $c.req.uri_for('/view_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,$metrics_params) :>"><: $metrics.graph_name :></a> <small><: $metrics.description :></small></h2>
   </div>
   <div class="col-md-5">
     <div class="btn-toolbar pull-right" role="toolbar">
       <div class="btn-group">
-        <a class="btn btn-default btn-sm" href="<: $c.req.uri_for('/csv/'~$metrics.uri,[
-            t=>$valid.valid('t'),
-            from=>$valid.valid('from'),
-            to=>$valid.valid('to'),
-            period=>$valid.valid('period'),
-            offset=>$valid.valid('offset'),
-            d=>1,
-        ]) :>">EXPORT</a>
+        <a class="btn btn-default btn-sm" href="<: $c.req.uri_for('/csv/'~$metrics.uri,$merge_params({d=>1})) :>">EXPORT</a>
         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li class="dropdown-header">CSV</li>
-          <li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'w',d=>1]) :>">1週間</a></li>
-          <li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'m',d=>1]) :>">1ヶ月</a></li>
-          <li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,[t=>'y',d=>1]) :>">1年</a></li>
+          <li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,$merge_params({t=>'w',d=>1})) :>">1週間</a></li>
+          <li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,$merge_params({t=>'m',d=>1})) :>">1ヶ月</a></li>
+          <li><a href="<: $c.req.uri_for('/csv/'~$metrics.uri,$merge_params({t=>'y',d=>1})) :>">1年</a></li>
           <li class="divider"></li>
           <li class="dropdown-header">HTML</li>
-          <li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,[t=>'w',d=>1]) :>">1週間</a></li>
-          <li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,[t=>'m',d=>1]) :>">1ヶ月</a></li>
-          <li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,[t=>'y',d=>1]) :>">1年</a></li>
+          <li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,$merge_params({t=>'w',d=>1})) :>">1週間</a></li>
+          <li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,$merge_params({t=>'m',d=>1})) :>">1ヶ月</a></li>
+          <li><a href="<: $c.req.uri_for('/table/'~$metrics.uri,$merge_params({t=>'y',d=>1})) :>">1年</a></li>
         </ul>
       </div>
 
       <div class="btn-group">
-        <a class="btn btn-default btn-sm iframe-src" data-tgl="<: 'iframe-src-'~$index :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,$metrics_params) :>">&lt;&gt;EMBED</a>
+        <a class="btn btn-default btn-sm iframe-src" data-tgl="<: 'iframe-src-'~$index :>" href="<: $c.req.uri_for('/ifr_complex/'~$metrics.uri,$metrics_params) :>">&lt;&gt;EMBED</a>
       </div>
 
       <div class="btn-group">
@@ -46,7 +37,7 @@
 <div id="<: 'iframe-src-'~$index :>" class="display-none well">
   <form role="form">
     <label>以下のiframeタグにてグラフを他のページに埋め込む事が出来ます</label>
-    <input class="form-control" value="<: '<iframe src="'~$c.req.uri_for('/ifr_complex/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,$metrics_params)~'" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>' :>" readonly="1" />
+    <input class="form-control" value="<: '<iframe src="'~$c.req.uri_for('/ifr_complex/'~$metrics.uri,$metrics_params)~'" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>' :>" readonly="1" />
   </form>
 </div>
 
