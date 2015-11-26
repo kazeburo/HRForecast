@@ -11,6 +11,7 @@ use File::Temp qw/tempdir/;
 use Plack::Loader;
 use Plack::Builder;
 use Plack::Builder::Conditionals;
+use Plack::Middleware::Header;
 use Log::Minimal;
 use HRForecast;
 use HRForecast::Web;
@@ -61,6 +62,8 @@ $app = builder {
         path => qr!^/(?:(?:css|js|img|fonts)/|favicon\.ico$)!,
             root => $root_dir . '/public';
     enable 'Scope::Container';
+    enable 'Header',
+        append => ['Access-Control-Allow-Origin' => '*'];
     $app;
 };
 my $loader = Plack::Loader->load(
