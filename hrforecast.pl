@@ -41,6 +41,7 @@ my $port = $config->{port} || 5125;
 my $host = $config->{host} || 0;
 my @front_proxy = exists $config->{front_proxy} ? @{$config->{front_proxy}} : ();
 my @allow_from = exists $config->{allow_from} ? @{$config->{allow_from}} : ();
+my @header = exists $config->{header} ? @{$config->{header}} : ();
 
 local $HRForecast::CONFIG = $config;
 debugf('dump config:%s',$config);
@@ -58,12 +59,13 @@ $app = builder {
             sub { [403,['Content-Type','text/plain'], ['Forbidden']] }
         };
     }
+    if ( @header ) {
+        enable 'Header', @header;
+    }
     enable 'Static',
         path => qr!^/(?:(?:css|js|img|fonts)/|favicon\.ico$)!,
             root => $root_dir . '/public';
     enable 'Scope::Container';
-    enable 'Header',
-        append => ['Access-Control-Allow-Origin' => '*'];
     $app;
 };
 my $loader = Plack::Loader->load(
