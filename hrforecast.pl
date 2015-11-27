@@ -11,6 +11,7 @@ use File::Temp qw/tempdir/;
 use Plack::Loader;
 use Plack::Builder;
 use Plack::Builder::Conditionals;
+use Plack::Middleware::Header;
 use Log::Minimal;
 use HRForecast;
 use HRForecast::Web;
@@ -40,6 +41,7 @@ my $port = $config->{port} || 5125;
 my $host = $config->{host} || 0;
 my @front_proxy = exists $config->{front_proxy} ? @{$config->{front_proxy}} : ();
 my @allow_from = exists $config->{allow_from} ? @{$config->{allow_from}} : ();
+my @header = exists $config->{header} ? @{$config->{header}} : ();
 
 local $HRForecast::CONFIG = $config;
 debugf('dump config:%s',$config);
@@ -56,6 +58,9 @@ $app = builder {
         enable match_if addr('!',\@allow_from), sub {
             sub { [403,['Content-Type','text/plain'], ['Forbidden']] }
         };
+    }
+    if ( @header ) {
+        enable 'Header', @header;
     }
     enable 'Static',
         path => qr!^/(?:(?:css|js|img|fonts)/|favicon\.ico$)!,
