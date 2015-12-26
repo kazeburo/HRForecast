@@ -699,7 +699,7 @@ my $display_complex_csv =  sub {
 
         push @result, [
             $datetime,
-            map { exists $date_group{$key}->{$_} ? $date_group{$key}->{$_} : '' } @id
+            map { exists $date_group{$key}->{$_} ? $date_group{$key}->{$_} : 0 } @id
         ];
     }
 
