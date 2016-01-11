@@ -53,7 +53,7 @@
 <div style="position:relative">
   <div style="position:absolute;width:198px;right:0px;top:0px;word-wrap:break-word;">
     <span id="label-<: $index :>">
-    <a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,$metrics_params) :>" style="color:<: $metrics.color :>">
+    <a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,$metrics_params) :>" style="color:<: $metrics.color :>" title="<: $metrics.description :>">
     <span style="font-weight:bold"><: '/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name :></span>
     </a>
     </span>

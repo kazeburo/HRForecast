@@ -58,7 +58,7 @@ body {
 : if $valid.valid('graphlabel') != 0 {
     <div style="position:absolute;width:198px;right:0px;top:<: ($valid.valid('graphheader') == 0) ? '0px' : '45px' :>;word-wrap:break-word;">
     <span id="label-0">
-    <a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,$metrics_params) :>" style="color:<: $metrics.color :>">
+    <a href="<: $c.req.uri_for('/view/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name,$metrics_params) :>" style="color:<: $metrics.color :>" title="<: $metrics.description :>">
     <span style="font-weight:bold"><: '/'~$metrics.service_name~'/'~$metrics.section_name~'/'~$metrics.graph_name :></span>
     </a>
     </span>

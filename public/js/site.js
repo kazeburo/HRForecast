@@ -69,6 +69,12 @@ function loadGraphsLater () {
 function loadGraphs () {
   var gdiv = $(this);
   var limit = 8;
+  var tooltip = $('#tooltip');
+  if (tooltip.size() == 0) {
+    tooltip = $('<div id="tooltip"><span class="xval"></span><br/><span class="yval"></span><br/><span class="total"></span></div>');
+    $(document.body).append(tooltip);
+  }
+
   $('#'+'label-'+gdiv.data('index')).removeClass('dygraph-closest-legend');
   $('#'+'label-'+gdiv.data('index')).removeClass('dygraph-highlighted-legend');
   if ( gdiv.data('colors').length > limit ) {
@@ -110,7 +116,7 @@ function loadGraphs () {
           }
       },
       axisLabelFontSize: 12,
-      highlightCallback: function(e, x, pts, row){
+      highlightCallback: function(e, x, pts, row, name){
           var total = 0;
           $('#onmouse-'+gdiv.data('index')).show();
           $('#label-'+gdiv.data('index')).hide();
@@ -119,12 +125,23 @@ function loadGraphs () {
           });
           if ( gdiv.data('stack') ) {
               $('#total-'+gdiv.data('index')).html('<br /><strong>TOTAL</strong>:'+addFigureVal(total));
+              $('#tooltip .total').text("TOTAL: " + addFigureVal(total));
+          }
+          $('#tooltip').show();
+          $('#tooltip').css({left:e.pageX, top:e.pageY});
+          var date = new Date(x)
+          $('#tooltip .xval').text(date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ':');
+          for (var i in pts) {
+              if (pts[i].name == name) {
+                  $('#tooltip .yval').text(name + ': ' + addFigureVal(pts[i].yval));
+              }
           }
       },
       unhighlightCallback: function(e) {
           $('#onmouse-'+gdiv.data('index')).hide();
           $('#label-'+gdiv.data('index')).show();
           $('#total-'+gdiv.data('index')).html('');
+          $('#tooltip').hide();
       }
     }
   );
