@@ -8,23 +8,28 @@
 </h1>
 
 : my $path_info = $c.req.path_info;
+
 <ul class="pagination pagination-sm pull-right" style="margin: 10px 0px;">
-: if $path_info.match('^/view/') {
-<li class="<: ($valid.valid('t') == 'w') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'w']) :>">1週間</a></li>
-<li class="<: ($valid.valid('t') == 'm') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'m']) :>">1ヶ月</a></li>
-<li class="<: ($valid.valid('t') == 'y') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'y']) :>">1年</a></li>
-
-: } else if $path_info.match('^/view_complex/') { 
-<li class="<: ($valid.valid('t') == 'w') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view_complex/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'w']) :>">1週間</a></li>
-<li class="<: ($valid.valid('t') == 'm') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view_complex/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'m']) :>">1ヶ月</a></li>
-<li class="<: ($valid.valid('t') == 'y') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/view_complex/'~$c.args.service_name~'/'~$c.args.section_name~'/'~$c.args.graph_name, [t=>'y']) :>">1年</a></li>
-
-: } else {
-<li class="<: ($valid.valid('t') == 'w') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/list/'~$c.args.service_name~'/'~$c.args.section_name, [t=>'w']) :>">1週間</a></li>
-<li class="<: ($valid.valid('t') == 'm') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/list/'~$c.args.service_name~'/'~$c.args.section_name, [t=>'m']) :>">1ヶ月</a></li>
-<li class="<: ($valid.valid('t') == 'y') ? 'active' : '' :>"><a href="<: $c.req.uri_for('/list/'~$c.args.service_name~'/'~$c.args.section_name, [t=>'y']) :>">1年</a></li>
-: }
+<li class="<: ($valid.valid('t') == 'w') ? 'active' : '' :>"><a href="<: $c.req.uri_for($path_info, $merge_params({t=>'w'})) :>">1週間</a></li>
+<li class="<: ($valid.valid('t') == 'm') ? 'active' : '' :>"><a href="<: $c.req.uri_for($path_info, $merge_params({t=>'m'})) :>">1ヶ月</a></li>
+<li class="<: ($valid.valid('t') == 'y') ? 'active' : '' :>"><a href="<: $c.req.uri_for($path_info, $merge_params({t=>'y'})) :>">1年</a></li>
 </ul>
+
+<div class="col-xs-2 pull-right" style="margin: 10px 0px;">
+<div class="input-group">
+<span class="input-group-addon">f</span>
+<select class="form-control input-sm" onchange="location=$(this).val();">
+: for $calculations -> $calculation {
+ <option
+   <: ($valid.valid('calculation') == $calculation.function) ? 'selected=selected' : '' :>
+   value="<: $c.req.uri_for($path_info, $merge_params({calculation=>$calculation.function})) :>">
+   : $calculation.name
+ </option>
+: }
+</select>
+</div>
+</div>
+
 <div class="clearfix"></div>
 
 : for $metricses ->  $metrics {

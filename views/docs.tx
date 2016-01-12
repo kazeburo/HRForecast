@@ -147,6 +147,18 @@ c => 指定<br />
 <td>オプション</td>
 </tr>
 
+<tr>
+<td>calculation</td>
+<td>グラフの表示形式<br />
+無指定 => そのまま表示<br />
+runningtotal => 累計表示<br />
+runningtotal_by_month => 月別累計表示<br />
+difference => 差分表示<br />
+difference_plus => 増加分のみの差分表示<br />
+</td>
+<td>オプション</td>
+</tr>
+
 </table>
 
 : }

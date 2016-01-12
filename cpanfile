@@ -13,4 +13,4 @@ requires 'Plack::Builder::Conditionals' => '0.03';
 requires 'Scope::Container::DBI' => '0.03';
 requires 'Plack::Middleware::Scope::Container' => '0.01';
 requires 'Plack::Middleware::Header' => '0.04';
-
+requires 'Test::MockObject' => 0;
