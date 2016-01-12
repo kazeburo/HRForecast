@@ -54,7 +54,7 @@
   <div style="position:absolute;width:198px;right:0px;top:0px;word-wrap:break-word;">
     <span id="label-<: $index :>">
     : for $metrics.metricses ->  $i_metrics {
-      <a href="<: $c.req.uri_for('/view/'~$i_metrics.service_name~'/'~$i_metrics.section_name~'/'~$i_metrics.graph_name,$metrics_params) :>" style="color:<: $i_metrics.color :>">
+      <a href="<: $c.req.uri_for('/view/'~$i_metrics.service_name~'/'~$i_metrics.section_name~'/'~$i_metrics.graph_name,$metrics_params) :>" style="color:<: $i_metrics.color :>" title="<: $i_metrics.description :>">
       <span style="font-weight:bold"><: '/'~$i_metrics.service_name~'/'~$i_metrics.section_name~'/'~$i_metrics.graph_name :></span>
       </a><br />
     : }

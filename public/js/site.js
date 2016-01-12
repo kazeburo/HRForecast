@@ -3,6 +3,17 @@ function round(num, places) {
   var shift = Math.pow(10, places);
   return Math.round(num * shift)/shift;
 };
+function formatDate(date) {
+  var yyyy = date.getFullYear();
+  var mm = ('0' + (date.getMonth() + 1)).slice(-2);
+  var dd = ('0' + date.getDate()).slice(-2);
+  var hh = ('0' + date.getHours()).slice(-2);
+  var ii = ('0' + date.getMinutes()).slice(-2);
+  var ss = ('0' + date.getSeconds()).slice(-2);
+  var yyyymmdd = yyyy + '/' + mm + '/' + dd;
+  var hhii = hh + ':' + ii;
+  return yyyymmdd + ((hhii == '00:00') ? '' : ' ' + hhii);
+}
 function formatValue(v) {
   if (v < 1000) return v;
   var magnitude = Math.floor(String(Math.floor(v)).length / 3);
@@ -69,6 +80,12 @@ function loadGraphsLater () {
 function loadGraphs () {
   var gdiv = $(this);
   var limit = 8;
+  var tooltip = $('#tooltip');
+  if (tooltip.size() == 0) {
+    tooltip = $('<div id="tooltip"><span class="xval"></span><br/><span class="yval"></span><br/><span class="total"></span></div>');
+    $(document.body).append(tooltip);
+  }
+
   $('#'+'label-'+gdiv.data('index')).removeClass('dygraph-closest-legend');
   $('#'+'label-'+gdiv.data('index')).removeClass('dygraph-highlighted-legend');
   if ( gdiv.data('colors').length > limit ) {
@@ -110,7 +127,7 @@ function loadGraphs () {
           }
       },
       axisLabelFontSize: 12,
-      highlightCallback: function(e, x, pts, row){
+      highlightCallback: function(e, x, pts, row, name){
           var total = 0;
           $('#onmouse-'+gdiv.data('index')).show();
           $('#label-'+gdiv.data('index')).hide();
@@ -119,12 +136,22 @@ function loadGraphs () {
           });
           if ( gdiv.data('stack') ) {
               $('#total-'+gdiv.data('index')).html('<br /><strong>TOTAL</strong>:'+addFigureVal(total));
+              $('#tooltip .total').text("TOTAL: " + addFigureVal(total));
+          }
+          $('#tooltip').show();
+          $('#tooltip').css({left:e.pageX + 10, top:e.pageY + 10});
+          $('#tooltip .xval').text(formatDate(new Date(x)) + ':');
+          for (var i in pts) {
+              if (pts[i].name == name) {
+                  $('#tooltip .yval').text(name + ': ' + addFigureVal(pts[i].yval));
+              }
           }
       },
       unhighlightCallback: function(e) {
           $('#onmouse-'+gdiv.data('index')).hide();
           $('#label-'+gdiv.data('index')).show();
           $('#total-'+gdiv.data('index')).html('');
+          $('#tooltip').hide();
       }
     }
   );
