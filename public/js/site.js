@@ -3,6 +3,17 @@ function round(num, places) {
   var shift = Math.pow(10, places);
   return Math.round(num * shift)/shift;
 };
+function formatDate(date) {
+  var yyyy = date.getFullYear();
+  var mm = ('0' + (date.getMonth() + 1)).slice(-2);
+  var dd = ('0' + date.getDate()).slice(-2);
+  var hh = ('0' + date.getHours()).slice(-2);
+  var ii = ('0' + date.getMinutes()).slice(-2);
+  var ss = ('0' + date.getSeconds()).slice(-2);
+  var yyyymmdd = yyyy + '/' + mm + '/' + dd;
+  var hhii = hh + ':' + ii;
+  return yyyymmdd + ((hhii == '00:00') ? '' : ' ' + hhii);
+}
 function formatValue(v) {
   if (v < 1000) return v;
   var magnitude = Math.floor(String(Math.floor(v)).length / 3);
@@ -128,9 +139,8 @@ function loadGraphs () {
               $('#tooltip .total').text("TOTAL: " + addFigureVal(total));
           }
           $('#tooltip').show();
-          $('#tooltip').css({left:e.pageX, top:e.pageY});
-          var date = new Date(x)
-          $('#tooltip .xval').text(date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ':');
+          $('#tooltip').css({left:e.pageX + 10, top:e.pageY + 10});
+          $('#tooltip .xval').text(formatDate(new Date(x)) + ':');
           for (var i in pts) {
               if (pts[i].name == name) {
                   $('#tooltip .yval').text(name + ': ' + addFigureVal(pts[i].yval));
