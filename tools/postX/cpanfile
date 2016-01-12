@@ -1,0 +1,5 @@
+requires 'LWP::UserAgent';
+requires 'Config::Pit';
+requires 'YAML';
+requires 'App::Options';
+requires 'File::Temp';
